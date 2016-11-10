@@ -1,0 +1,10 @@
+{
+  "generator-openapi-repo": {
+    "importExistingSpec": false,
+    "name": "IndexSearch",
+    "repo": "BejaminMedia/bonnier-services-documentation",
+    "splitSpec": false,
+    "samples": true,
+    "installSwaggerUI": true
+  }
+}
