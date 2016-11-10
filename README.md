@@ -1,5 +1,5 @@
 # IndexSearch OpenAPI Specification
-[![Build Status](https://travis-ci.org/BejaminMedia/bonnier-services-documentation.svg?branch=master)](https://travis-ci.org/BejaminMedia/bonnier-services-documentation)
+[![Build Status](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation.svg?branch=master)](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation)
 
 ## Steps to finish
 
@@ -8,7 +8,7 @@
 3. Use the token value as a value for [Travis environment variable](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings) with the name `GH_TOKEN`
 4. Make a test commit to trigger CI: `git commit --allow-empty -m "Test Travis CI" && git push`
 5. Wait until Travis build is finished. You can check progress by clicking on the `Build Status` badge at the top
-6. If you did everything correct, https://bejaminmedia.github.io/bonnier-services-documentation/ will lead to your new docs
+6. If you did everything correct, https://benjaminmedia.github.io/bonnier-services-documentation/ will lead to your new docs
 7. **[Optional]** You can setup [custom domain](https://help.github.com/articles/using-a-custom-domain-with-github-pages/) (just create `web/CNAME` file)
 8. Start writing/editing your OpenAPI spec: check out [usage](#usage) section below
 9. **[Optional]** If you document public API consider adding it into [APIs.guru](https://APIs.guru) directory using [this form](https://apis.guru/add-api/).
@@ -16,12 +16,12 @@
 
 ## Links
 
-- Documentation(ReDoc): https://bejaminmedia.github.io/bonnier-services-documentation/
-- SwaggerUI: https://bejaminmedia.github.io/bonnier-services-documentation/swagger-ui/
+- Documentation(ReDoc): https://benjaminmedia.github.io/bonnier-services-documentation/
+- SwaggerUI: https://benjaminmedia.github.io/bonnier-services-documentation/swagger-ui/
 - Look full spec:
-    + JSON https://bejaminmedia.github.io/bonnier-services-documentation/swagger.json
-    + YAML https://bejaminmedia.github.io/bonnier-services-documentation/swagger.yaml
-- Preview spec version for branch `[branch]`: https://bejaminmedia.github.io/bonnier-services-documentation/preview/[branch]
+    + JSON https://benjaminmedia.github.io/bonnier-services-documentation/swagger.json
+    + YAML https://benjaminmedia.github.io/bonnier-services-documentation/swagger.yaml
+- Preview spec version for branch `[branch]`: https://benjaminmedia.github.io/bonnier-services-documentation/preview/[branch]
 
 **Warning:** All above links are updated only after Travis CI finishes deployment
 
@@ -35,7 +35,7 @@
 ### Usage
 
 1. Run `npm start`
-2. Checkout console output to see where local server is started. You can use all [links](#links) (except `preview`) by replacing https://bejaminmedia.github.io/bonnier-services-documentation/ with url from the message: `Server started <url>`
+2. Checkout console output to see where local server is started. You can use all [links](#links) (except `preview`) by replacing https://benjaminmedia.github.io/bonnier-services-documentation/ with url from the message: `Server started <url>`
 3. Make changes using your favorite editor or `swagger-editor` (look for URL in console output)
 4. All changes are immediately propagated to your local server, moreover all documentation pages will be automagically refreshed in a browser after each change
 **TIP:** you can open `swagger-editor`, documentation and `swagger-ui` in parallel
