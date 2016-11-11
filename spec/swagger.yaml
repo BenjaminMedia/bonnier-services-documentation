@@ -5,242 +5,916 @@ swagger: '2.0'
 # You should specify common part of your endpoints in the following format:
 #   <schemes>://<host><basepath>
 schemes:
-  - http # Remove if your API doesn't support HTTP
-  - https # Remove if your API donsn't support HTTPS
-host: example.com # Replace with your hostname. You can also specify port e.g. example.com:777
-basePath: /api/v1 # Replace with your basePath. Note: SHOULD begin with '/'.
+  - http # Remove if your API donsn't support HTTPS
+host: staging-indexdb.services.interactives.dk # Replace with your hostname. You can also specify port e.g. example.com:777
+basePath: /api/v2 # Replace with your basePath. Note: SHOULD begin with '/'.
 info:
-  # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
-  description: |
-    This is an **example** API to demontstrate features of OpenAPI specification
-    # Introduction
-    This specification is intended to to be a good starting point for describint your API in 
-    [OpenAPI/Swagger format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md).
-    It also demonstrates features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo) tool and 
-    [ReDoc](https://github.com/Rebilly/ReDoc) documentation engine. So beyond the standard OpenAPI syntax we use a few 
-    [vendor extensions](https://github.com/Rebilly/ReDoc/blob/master/docs/redoc-vendor-extensions.md).
-    
-    # OpenAPI Specification
-    The goal of The OpenAPI Specification is to define a standard, language-agnostic interface to REST APIs which
-    allows both humans and computers to discover and understand the capabilities of the service without access to source
-    code, documentation, or through network traffic inspection. When properly defined via OpenAPI, a consumer can 
-    understand and interact with the remote service with a minimal amount of implementation logic. Similar to what
-    interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
-
-  version: '1.0.0' # Your API version
-  # It can be any string but it is better to use semantic versioning: http://semver.org/
-  # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
-
-  title: Example.com # Replace with your API title
+  title: Index Search # Replace with your API title
   # Keep it simple. Don't add "API" or verison at the end of the string.
 
-  termsOfService: 'https://example.com/terms/' # [Optional] Replace with an URL to your ToS
+  # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
+  description: |
+    This API alllows you to store your data in index data store which allows for extremely fast searching
+
+  version: '2.0.0' # Your API version
+  # It can be any string but it is better to use semantic versioning: http://semver.org/
+  # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
   contact:
-    email: contact@example.com # [Optional] Replace with your contact email
-    url: 'http://example.com/contact' # [Optional] Replace with link to your contact form
-  license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    email: interactive@bonnier.dk # [Optional] Replace with your contact email
   x-logo:
-    url: 'https://apis.guru/openapi-template/logo.png'
-externalDocs:
-  description: Find out how to create Github repo for your OpenAPI spec.
-  url: 'https://github.com/Rebilly/generator-openapi-repo'
+    url: 'http://www.bonnier.com/Global/Images/Bonnier_logotype.png'
 produces:
   # List of mime types your API endpoins can return.
   # This is a global default. You can OVERWRITE it in each specific operation.
   # Remove the ones not used in your API
   - application/json
-  - application/xml
-  - text/csv
   # you can add any mime type your API produces to the list
 consumes:
   # List of mime types your API endpoins consumes.
   # This is a global default. You can OVERWRITE it in each specific operation.
   # Remove the ones not supported by your API
   - application/json
-  - application/xml
   # you can add any mime type your API consumes to the list
 
 # A list of tags used by the specification with additional metadata.
 # The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
-  - name: Echo
-    description: Example echo operations
-  - name: User
-    description: Operations about user
-# Security scheme definitions that can be used across the specification.
-securityDefinitions:
-  main_auth: # security definition name (you can name it as you want)
-    type: oauth2 # authorization type, one of: oauth2, basic, apiKey
-    # the following options are specific to oauth2 type
-    authorizationUrl: 'http://example.com/api/oauth/dialog'
-    flow: implicit
-    scopes:
-      'read:users': read users info
-      'write:users': modify or remove users
-  api_key: # security definition name (you can name it as you want)
-    type: apiKey
-    # The following options are specific to apiKey type
-    in: header # Where API key will be passed: header or query
-    name: api_key # API key paramteer name
+  - name: Search
+    description: |
+      ## Query example
+      In V2 you are now able to parse an ElasticSearch query to our API and have it ported directly into ElasticSearch. This will be the primary way of querying for data.
+
+      This also means that you can use all the existing examples and documentation provided by ElasticSearch here [ElasticSearch Query Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/2.1/query-dsl.html).
+
+      For starters we suggest looking at the example below, and you can always contact us with questions or to help build any query functionality.
+      **example query:**
+
+      ``` javascript
+      {
+         "locale":"da_dk",
+         "body":{
+            "size":5,
+            "query":{
+               "bool":{
+                  "must":{
+                     "multi_match":{
+                        "query":"moti",
+                        "fields":[
+                           "title.*",
+                           "description.*",
+                           "categories.*",
+                           "tags.*"
+                        ],
+                        "type":"most_fields"
+                     }
+                  },
+                  "filter":[
+                     {
+                        "term":{
+                           "brand_code":"kom"
+                        }
+                     },
+                     {
+                        "term":{
+                           "app_code":"fordelszonen"
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      }
+      ```
+
+
+      **Success Response:**
+
+        **Code:** 200
+
+      ``` javascript
+      	{
+      	   "total":3,
+      	   "max_score":0,
+      	   "hits":[
+      	      {
+      	         "app_code":"kom",
+      	         "brand_code":"fordelszonen",
+      	         "title":"Simple Motions 2"
+      	         ...
+      	      }
+      	   ]
+      	}
+      	```
+
+      **Error Response:**
+
+      Requesting with an incorrect query will return an error code 400. This error is generated by ElasticSearch and will return some information that might nessecarily not be useful for you, but potentially could help you in your search for the error.
+
+      **Code:** 400 Bad Request
+
+      ``` javascript
+      	{
+      	   "status":400,
+      	   "messages":{
+      	      "root_cause":[
+      	         {
+      	            "type":"query_parsing_exception",
+      	            "reason":"No query registered for [fs]",
+      	            "index":"content_da_dk",
+      	            "line":1,
+      	            "col":20
+      	         }
+      	      ],
+      	      "type":"search_phase_execution_exception",
+      	      "reason":"all shards failed",
+      	      "phase":"query",
+      	      "grouped":true,
+      	      "failed_shards":[
+      	         {
+      	            "shard":0,
+      	            "index":"content_da_dk",
+      	            "node":"JUWvVMQNRDqd42_Svxxe7Q",
+      	            "reason":{
+      	               "type":"query_parsing_exception",
+      	               "reason":"No query registered for [fs]",
+      	               "index":"content_da_dk",
+      	               "line":1,
+      	               "col":20
+      	            }
+      	         }
+      	      ]
+      	   }
+      	}
+      	```
+      **Notes:**
+
+      Please be adviced that when searching for data with an impartial string you can only get results when searching within the `title.*`, `description.*`, `tags.*` and `categories.*`. Doing full-text search in other then the mentioned fields will require an exact match of the exact string parsed. Meaning "Sea" will not match "I am searching", but will match "I am under the sea".
+
+      For title, description, tags and categories, it is also required that when doing fulltext search you append the field with `.*` to let the API know you are doing a fulltext search rather then an exact value query. This functionality is limited to the before specified fields only.
+
+      ### Additional Query Examples:
+      Below is a couple of examples on queries that will often be used.
+
+      #### Pagination
+      Below query will fetch 50 items, starting from number 100, when specified app and brand code values.
+
+      ``` javascript
+      {
+         "locale":"da_dk",
+         "body":{
+            "size":50,
+            "from":100,
+            "query":{
+               "bool":{
+                  "filter":[
+                     {
+                        "term":{
+                           "brand_code":"kom"
+                        }
+                     },
+                     {
+                        "term":{
+                           "app_code":"fordelszonen"
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      }
+      ```
+
+      #### [Sorting](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-request-sort.html)
+
+      Below query will fetch 50 items, starting from number 100, when specified app and brand code values.
+
+      ``` javascript
+      {
+         "locale":"da_dk",
+         "body":{
+      	   "sort":[
+      	      {
+      	         "title": { "order":"asc" }
+      	      }
+      	   ],
+            "size":50,
+            "from":100,
+            "query":{
+               "bool":{
+                  "filter":[
+                     {
+                        "term":{
+                           "brand_code":"kom"
+                        }
+                     },
+                     {
+                        "term":{
+                           "app_code":"fordelszonen"
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      }
+      ```
+
+      #### [Boosting](https://www.elastic.co/guide/en/elasticsearch/reference/2.1/query-dsl-query-string-query.html#_boosting)
+      Below query will search the content for moti and boost the "ranking" of those results which has moti in their title by 3 (notice: `"title.*^3"`), description by 2 ("description.*^2") and the rest by one.
+
+      Meaning a if all of them contains the "moti" query, the title will give "3 points", description "2 points" and the rest "1 point". The data is then returned based on the average scoring of each document.
+
+      The default boost value is 1, but can be any positive floating point number. Boosts between 0 and 1 reduce relevance.
+
+      ``` javascript
+      {
+         "locale":"da_dk",
+         "body":{
+            "size":5,
+            "query":{
+               "bool":{
+                  "must":{
+                     "multi_match":{
+                        "query":"moti",
+                        "fields":[
+                           "title.*^3",
+                           "description.*^2",
+                           "categories.*",
+                           "tags.*"
+                        ],
+                        "type":"most_fields"
+                     }
+                  },
+                  "filter":[
+                     {
+                        "term":{
+                           "brand_code":"kom"
+                        }
+                     },
+                     {
+                        "term":{
+                           "app_code":"fordelszonen"
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      }
+
+      ```
+      #### [Aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/2.1/search-aggregations.html):
+
+      Aggregations is one of the features that ElasticSearch allows us to do very nicely.
+
+      Lets imagine we are creating an application that shows a list of cars. We want to be able to filter this list of cars by brand, model and series. If we pick a value in the brand dropdown, say brand A, then we want the other filters to adjust accordingly, so that the other dropdowns do not show values in which no car with brand A exists.
+
+      This can be done with the following query
+
+      ``` javascript
+      {
+         "locale":"da_dk",
+         "body":{
+            "query":{
+               "bool":{
+                  "filter":[
+                     {
+                        "term":{
+                           "brand_code":"car"
+                        }
+                     },
+                     {
+                        "term":{
+                           "app_code":"carapp"
+                        }
+                     }
+                  ]
+               }
+            },
+            "aggregations":{
+               "brands":{
+                  "terms":{
+                     "field":"meta.brand"
+                  }
+               },
+               "models":{
+                  "terms":{
+                     "field":"meta.model"
+                  }
+               },
+               "series":{
+                  "terms":{
+                     "field":"meta.series"
+                  }
+               }
+            }
+         }
+      }
+      ```
+
+      Returns the following response
+
+      ``` javascript
+      {
+        "total": 1,
+        "max_score": 9.260918,
+        "hits": [
+        		...
+        ],
+        "aggregations": {
+          "brands": [
+            {
+              "key": "BMW",
+              "doc_count": 7
+            },
+            {
+              "key": "Ferrari",
+              "doc_count": 15
+            },
+            {
+              "key": "Audi",
+              "doc_count": 23
+            }
+          ],
+          "models": [
+            {
+              "key": "A3",
+              "doc_count": 7
+            },
+            {
+              "key": "X6",
+              "doc_count": 9
+            }
+          ],
+          "series": [
+            {
+              "key": "Series 2",
+              "doc_count": 1
+            }
+          ]
+        }
+      }
+      ```
+
+      #### [Search Request Fields](https://www.elastic.co/guide/en/elasticsearch/reference/2.1/search-request-fields.html):
+
+      If you know you are only going to be using certain fields for the document you can ask to only have those returned. This can be done with the following query:
+
+      ``` javascript
+      {
+         "locale":"da_dk",
+         "body":{
+            "fields" : ["title", "description", "image", "url"],
+            "query":{
+               "bool":{
+                  "filter":[
+                     {
+                        "term":{
+                           "brand_code":"car"
+                        }
+                     },
+                     {
+                        "term":{
+                           "app_code":"carapp"
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      }
+      ```
+
+      Returns the following response
+
+      ``` javascript
+      {
+        "total": 2,
+        "max_score": 0,
+        "hits": [
+          {
+            "description": "Some description",
+            "image": "http://image.com/image.jpg",
+            "title": "Some Title",
+            "url": "http://some.url/here",
+            "id": "AVKDCR3M3p6shXKj93vw",
+            "score": 0
+          },
+          {
+            "description": "Some description",
+            "image": "http://image.com/image.jpg",
+            "title": "Some Title",
+            "url": "http://some.url/here",
+            "id": "FAKDCR3M3p6shXKj93vw",
+            "score": 0
+          }
+        ]
+      }
+      ```
+
+      #### [Searching with And & Or](https://www.elastic.co/guide/en/elasticsearch/reference/current/compound-queries.html):
+
+      Given we want to find 'Cameras' and 'Printers' with the brand 'Canon' or 'Sony'.
+
+      A query could be built like below that will query bool (true or false) on all documents and based on whether they have tags [Canon or Sony] AND categories [Camera or Printers].
+
+      ``` javascript
+      {
+         "locale":"da_dk",
+         "body":{
+            "size":"10",
+            "from":0,
+            "query":{
+               "bool":{
+                  "must":{
+                     "and":[
+                        {
+                           "or":[
+                              {
+                                 "match":{
+                                    "tags":"Canon"
+                                 }
+                              },
+                              {
+                                 "match":{
+                                    "tags":"Sony"
+                                 }
+                              }
+                           ]
+                        },
+                        {
+                           "or":[
+                              {
+                                 "match":{
+                                    "categories":"Kamera"
+                                 }
+                              },
+                              {
+                                 "match":{
+                                    "categories":"Printere"
+                                 }
+                              }
+                           ]
+                        }
+                     ]
+                  },
+                  "filter":[
+                     {
+                        "term":{
+                           "app_code":"productsearch"
+                        }
+                     }
+                  ]
+               }
+            }
+         }
+      }
+      ```
+      #### [Suggesting](https://www.elastic.co/guide/en/elasticsearch/reference/current/suggester-context.html):
+
+      Below query we ask IS for suggestions to a search for the text "Suk".
+
+      Notice that we have to add a context here. Contexts are available based on a combined app_code and brand_code. You cannot ask for suggestions across all content in IS.
+
+      ``` javascript
+      {
+          "locale":"da_dk",
+          "body":{
+              "size":"0",
+              "suggest":{
+                  "text":"Suk",
+                  "ingredients":{
+                      "completion":{
+                          "field":"categories.suggest",
+                          "fuzzy":{
+                              "unicode_aware":true
+                          },
+                          "context":{
+                              "app_code":"site",
+                              "brand_code":"meal"
+                          }
+                      }
+                  }
+              }
+          }
+      }
+      ```
+
+      Returns the following response
+
+      ``` javascript
+      {
+        "total": 526,
+        "max_score": 0,
+        "hits": [],
+        "suggest": {
+          "ingredients": [
+            {
+              "text": "Suk",
+              "offset": 0,
+              "length": 3,
+              "options": [
+                {
+                  "text": "Sukker",
+                  "score": 41
+                },
+                {
+                  "text": "Skyr",
+                  "score": 10
+                },
+      			...
+              ]
+            }
+          ]
+        }
+      }
+      ```
+
+  - name: Teaser
+    description: |
+
+      ## Understanding how we handle your data
+
+      When you put data into ElasticSearch we take that data and store it in a number of different ways. Each way allows for you to search a specific way, or opens up for a special feature.
+
+      This section will go through how each of these different "mappings" will affect the ways in which you query for data.
+
+      (***Notice***: an untouched version of your document will always be saved, it is this document that we return when you query. The fields mentioned below is only used for query and is added only to help specify and do more precise queries.)
+
+      ### Mapping Terms
+
+      A teaser is composed of different fields each with its own mapping. The mapping controlls how the field value is indexed and plays a huge part in search performance.
+
+      So, to not repeat ourselves we will first introduce the different types of mapping that is possible, and then show which fields are mapped accordingly.
+
+       1. Lower Case
+      	* Saves all data as a lowercase string
+      	* Ex: 'Bob' -> 'bob'
+       2. Boolean
+      	* true/false
+      	* Ex: 'True' -> 'true'
+       3. Default Language
+      	* ***Enables country-specific localized searching*** This will use a dictionary (different for each language) to save each word in its stem-form. You don't have to consider this when quering it, since your query will go through the same dictionary. So that if you search for 'flying kites' you will actually search for 'fly kite'.
+      	* Ex: 'Peter loves flying kites' -> 'Peter love fly kite'
+       4. Autocomplete
+      	* ***Enables autocompletion***. Data in this field is saved multiple times and split into parts of the word. We split it into the first 2 characters, 3 characters, up to 10 characters. That way you can query this field ex: 'com' and get 'computer' back.
+      	* Ex: 'Computer Test' -> 'co', 'com', 'comp', ..., 'te', 'tes', 'test'.
+       5. Trigram
+      	* ***Enables query with spelling errors while still getting results.*** Data in this field is split into multiple small strings of 3  characters. This means that if you use this field to search for 'computer' you are actually searching for 'com', 'omp', 'mpu', etc. Meaning if you miss-spell 'kombuter' you are still going to get a match for 'computer' on 'ute', 'ter'. When quering like this matches are ordered by score (unless you override the sorting order) and the score can thus be used to filter out good relevance. Notice that the above query would also match 'ter' for 'terminal' and even 'router' as highly relevant since both 'ute' and 'ter' matches like it did with 'kombuter'. This should still be considered better then no results. (Consider showing a warning to users when the highest score gets too low, to inform that no exact matching content was found).
+      	* Ex: 'Computer Test' -> 'co', 'com', 'comp', ..., 'te', 'tes', 'test'.
+       6. Raw
+      	* ***Saves data exactly like it was input***. Data in this field is not manipulated. If you save 'Computer' or 'CoMpuTer' the data will be saved exactly like this. Be careful though, if you want to filter.
+      	* Ex: 'ComPutEr' -> 'ComPutEr'.
+
+      ### The mappings
+
+      It is important to note that each field can have multiple mappings. Ex. Title has a standard language mapping that is accessed through just 'title', but it also has a 'title.autocomplete', 'title.trigram', 'title.lowercase' and 'title.raw'.
+
+
+      | Field  					| Type | Mapping | Example |
+      |:---						|:---:	|:---		|---|
+      | **app_code**  				|string|lowercase|'Fordelszonen' -> 'fordelszonen'|
+      | **brand_code** 				|string|lowercase|'Kom' -> 'kom'|
+      | **active** 					|boolean|boolean|True -> true|
+      | **content_type** 			|string|lowercase|'Article' -> 'article'|
+      | **locale** 					|string|lowercase|'Da\_Dk' -> 'da\_dk'|
+      | **title** 					|string|default language|'Watch Peter flying kites' -> 'watch peter fly kite'|
+      | title.autocomplete 	|string|autocomplete |'Free cake' -> 'fr', 'fre', 'free', 'ca', 'cak', 'cake'|
+      | title.trigram 			|string|trigram |'Cakes' -> 'cak', 'ake', 'kes'|
+      | title.lowercase 		|string|lowercase|'Fruitcake' -> 'fruitcake'|
+      | title.raw 				|string|raw|'CakE StoRm' -> 'CakE StoRm'|
+      | **title\_teaser** 			|string|default language|'Watch Peter flying kites' -> 'watch peter fly kite'|
+      | title\_teaser.autocomplete 	|string|autocomplete |'Free cake' -> 'fr', 'fre', 'free', 'ca', 'cak', 'cake'|
+      | title\_teaser.trigram 			|string|trigram |'Cakes' -> 'cak', 'ake', 'kes'|
+      | title\_teaser.lowercase 		|string|lowercase|'Fruitcake' -> 'fruitcake'|
+      | title\_teaser.raw 				|string|raw|'CakE StoRm' -> 'CakE StoRm'|
+      | **description** 		|string|default language|'Watch Peter flying kites' -> 'watch peter fly kite'|
+      | **descripntion\_teaser** |string|default language|'Watch Peter flying kites' -> 'watch peter fly kite'|
+      | **categories**			   |string|default language| ['Flying', 'birds', 'nature'] -> ['fly', 'bird', 'nature']|
+      | categories.autocomplete 	|string|autocomplete|['Flying', 'birds', 'nature'] -> ['fl', 'fly', 'flyi', 'flyin', 'flying' 'bi', 'bir', 'bird', 'birds', 'na', 'nat', 'natu', 'natur', 'nature']|
+      | categories.trigram 			|string|trigram|['Flying', 'birds', 'nature'] -> ['fly', 'lyi', 'yin', 'ing', 'bir', 'ird', 'nat', 'atu', 'tur', 'ure']|
+      | categories.lowercase 		|string|lowercase|['Flying', 'birds', 'nature'] -> ['flying', 'birds', 'nature']|
+      | categories.raw 				|string|raw|['Flying', 'birds', 'NaTure'] -> ['Flying', 'birds', 'NaTure']|
+      | **tags**			   |string|default language| ['Flying', 'birds', 'nature'] -> ['fly', 'bird', 'nature']|
+      | categories.autocomplete 	|string|autocomplete|['Flying', 'birds', 'nature'] -> ['fl', 'fly', 'flyi', 'flyin', 'flying' 'bi', 'bir', 'bird', 'birds', 'na', 'nat', 'natu', 'natur', 'nature']|
+      | categories.trigram 			|string|trigram|['Flying', 'birds', 'nature'] -> ['fly', 'lyi', 'yin', 'ing', 'bir', 'ird', 'nat', 'atu', 'tur', 'ure']|
+      | categories.lowercase 		|string|lowercase|['Flying', 'birds', 'nature'] -> ['flying', 'birds', 'nature']|
+      | categories.raw 				|string|raw|['Flying', 'birds', 'NaTure'] -> ['Flying', 'birds', 'NaTure']|
+      | **body** |string|default language|'Here we are watching peter flying with kites' -> 'here watch peter fly kite'|
+      | **url** |string|url|www.url.com -> http://www.url.com|
+      | **image** |string|not_analyzed|http://www.UrL.com -> http://www.UrL.com|
+      | **published\_at** |string|date|'08-02-2016'->'08-02-2016'|
+      | published\_at.raw |string|not_analyzed|'08-02-2016'->'08-02-2016'|
+      | **updated\_at** |string|date|'08-02-2016'->'08-02-2016'|
+      | updated\_at.raw |string|not_analyzed|'08-02-2016'->'08-02-2016'|
+      | **meta** |object|dynamic|Read more below in dynamic meta mapping|
+
+securityDefinitions: # Security scheme definitions that can be used across the specification.
   basic_auth: # security definition name (you can name it as you want)
     type: basic
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
-# basePath in order to construct the full URL. 
+# basePath in order to construct the full URL.
 paths:
-  '/users/{username}': # path parameter in curly braces
-    # documentation for GET operation for this path
-    
-    # parameters list that are used with each operation for this path
-    parameters:
-      - name: pretty_print
-        in: query # place where paramter is passed: path, header, query or body, formData
-        description: Pretty print response
-        # type of the paramter: string, number, integer, boolean, array
-        type: boolean
-    get:
-      tags:
-        - User
-      
-      # summary is up to 120 symbold but we recommend to be shortest as possible
-      summary: Get user by user name
-      
-      # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
-      description: | 
-        Some description of the operation. 
-        You can use `markdown` here.
-      
-      # operationId should be unique across the whole specification
-      operationId: getUserByName
-      
-      # list of parameters for the operation
-      parameters:
-        - name: username
-          in: path
-          description: 'The name that needs to be fetched'
-          required: true
-          type: string
-        - name: with_email
-          in: query
-          description: Filter users without email
-          type: boolean
-      
-      # security schemas applied to this operation
-      security:
-        - main_auth:
-          - 'read:users' # for auth2 provide list of scopes here
-        - api_key: []
-      # overwriting default global produces
-      produces:
-        - application/json
-      responses: # list of responses
-        '200':
-          description: Success
-          schema: # response schema can be specified for each response
-            $ref: '#/definitions/User'
-          examples:
-          # repsonse samples for each type operation produces
-            application/json:
-              username: user1
-              email: user@example.com
-        '403':
-          description: Forbidden
-        '404':
-          description: User not found
-    # documentation for PUT operation for this path
-    put:
-      tags:
-        - User
-      summary: Updated user
-      description: This can only be done by the logged in user.
-      operationId: updateUser
-      produces:
-        - application/json
-      parameters:
-        - name: username
-          in: path
-          description: The name that needs to be updated
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Updated user object
-          required: true
-          # for body parameter you should specify request schema instead of type
-          schema:
-            $ref: '#/definitions/User'
-      security:
-        - main_auth:
-          - 'write:users'
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Invalid user supplied
-        '404':
-          description: User not found
-  
-  '/echo':
+  '/teaser':
     post:
       tags:
-        - Echo
-      summary: Echo test
-      description: Receive the exact message you've sent
-      operationId: echo
+        - Teaser
+      summary: Index a single entity
+      description: Create a new entity in the index storage
       parameters:
-        - name: message
+        - name: body
           in: body
-          description: 'Echo payload'
+          description: 'The JSON entity to create'
           required: true
           schema:
-            type: string
-            example: 'Hello world!'
+            $ref: '#/definitions/Teaser'
       security:
-        - api_key: []
+        - basic_auth: []
+      responses:
+        '201':
+          description: 'Created'
+          schema:
+            $ref: '#/definitions/BulkTeaserUpdate'
+  '/teaser/_bulk':
+    post:
+      tags:
+        - Teaser
+      summary: Index an array of entities
+      description: Create update or delete an array of enteties
+      parameters:
+        - name: body
+          in: body
+          description: 'The JSON entities to create'
+          required: true
+          schema:
+            $ref: '#/definitions/BulkBody'
+      security:
+        - basic_auth: []
       responses:
         '200':
-          description: 'OK'
-          examples:
-            'application/json': 'Hello world!'
+          description: 'Ok'
           schema:
-            type: string
-          # docuemnt headers for this repsonse
-          headers:
-            X-Rate-Limit: # Header name
-              type: integer # Header value type
-              format: int32 # Header value format
-              description: calls per hour allowed by the user
-            X-Expires-After:
-              type: string
-              format: date-time
-              description: date in UTC when token expires
+            $ref: '#/definitions/BulkResponseBody'
+  '/teaser/_search':
+    post:
+      tags:
+        - Search
+      summary: Search for entities
+      description: Submit a search query
+      parameters:
+        - name: body
+          in: body
+          description: 'The JSON entity to create'
+          required: true
+          schema:
+            $ref: '#/definitions/SearchBody'
+      security:
+        - basic_auth: []
+      responses:
+        '200':
+          description: 'Ok'
+          schema:
+            $ref: '#/definitions/SearchResponse'
+
 # An object to hold data types that can be consumed and produced by operations.
 # These data types can be primitives, arrays or models.
 definitions:
-  Email:
-    description: User email address
+  Tag:
+    description: A content category
     type: string
-    format: email
-    example: john.smith@example.com
-  User:
+    example: ''
+  Category:
+    description: A content category
+    type: string
+    example: ''
+  MetaObject:
     type: object
     properties:
-      username:
-        description: User supplied username
+      test_geo_point:
+        description: example geo point
         type: string
-        minLength: 4
-        example: John78
-      firstName:
-        description: User first name
+        example: 41.12,-71.34
+      test_string:
+        description: example string
         type: string
-        minLength: 1
-        example: John
-      lastName:
-        description: User last name
+        example: an awesome string
+  BulkResponseCreated:
+    type: object
+    properties:
+      id:
         type: string
-        minLength: 1
-        example: Smith
-      email:
-        $ref: '#/definitions/Email'
+        description: The id of the indexed entity
+        example: AVhTK1gkV8poqlzpyNyd
+      status:
+        type: integer
+        description: The status of the indexed entity 200 for created 201 for updated 400 for error
+        example: 200
+  BulkResponseUpdated:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The id of the indexed entity
+        example: AVhTKzQKV8poqlzpyNyc
+      status:
+        type: integer
+        description: The status of the indexed entity 200 for created 201 for updated 400 for error
+        example: 201
+  Meta:
+    type: object
+    description: |
+      A bucket that allows custom key values, types are controlled by appeding the _type to the key meaning if the key name is test_string the value will be interpreted and stored as a string
+
+      #### Dynamic Meta Mapping
+
+      To further understand the meta object make sure to read the section about [The Meta Object](#meta-object)
+
+      | Field  					| Type | Example |
+      |:---						|:---:|---|
+      | **\*[your\_field]**	|not\_analyzed|'ExamPle' -> 'ExamPle'|
+      | *[your\_field].lowercase				|lowercase|'ExamPle' -> 'example'|
+      | **\*\_date** 			|date|'Kom' -> '08-02-2016'->'08-02-2016'|
+      | **\*\_boolean** 		|boolean|True -> true|
+      | **\*\_long** 			|long|2147483647 -> 2147483647 |
+      | **\*\_integer**  		|integer|32767 -> 32767 |
+      | **\*\_byte** 			|byte|01011010 -> 01011010|
+      | **\*\_double** 			|double|2.2250738585072020×10−308 -> 2.2250738585072020×10−308|
+      | **\*\_float** 			|float|2.2424242 -> 2.2424242|
+      | **\*\_binary** 			|binary|010100010 -> 010100010 |
+      | **\*\_object** 			|object|{my\_field: 'Some Field Content'} -> {my\_field: 'Some Field Content'}|
+      | **\*\_ip** 				|ip|127.0.0.1 -> 127.0.0.1|
+      | **\*\_geo_point** 		|geo\_point|{'lat': 41.12, 'lon': -71.34} -> {'lat': 41.12, 'lon': -71.34}|
+      | **\*\_token_count** 		|token\_count|'Something' -> 9|
+
+    properties:
+      test_string:
+        description: example string
+        type: string
+        example: an awesome string
+      test_integer:
+        description: example integer
+        type: integer
+        example: 1
+      test_boolean:
+        description: example boolean
+        type: boolean
+        example: true
+      test_long:
+        description: example long
+        type: number
+        example: 2.1
+      test_float:
+        description: example float
+        type: number
+        example: 2.1
+      test_double:
+        description: example double
+        type: number
+        example: 2.1
+      test_byte:
+        description: example byte
+        type: string
+        example: 1
+      test_date:
+        description: example date
+        type: string
+        example: 2016-02-24
+      test_ip:
+        description: example ip
+        type: string
+        example: 127.0.0.1
+      test_geo_point:
+        description: example geo point
+        type: string
+        example: 41.12,-71.34
+      test_object:
+        $ref: '#/definitions/MetaObject'
+  Teaser:
+    discriminator: teaser
+    type: object
+    description: An example teaser entity could be an article
+    required:
+      - app_code
+      - brand_code
+      - locale
+      - title
+      - title_teaser
+      - description
+      - description_teaser
+      - image
+      - content_type
+      - url
+      - active
+      - categories
+      - tags
+    properties:
+      app_code:
+        description: The app code the content belongs to
+        type: string
+        example: productsearch
+      brand_code:
+        description: The brand code the content belongs to
+        type: string
+        example: kom
+      locale:
+        description: The locale for the content
+        type: string
+        enum: [da_dk, sv_se, nb_no, fi_fi, en_gb]
+      title:
+        description: The title for the content
+        type: string
+        example: An awesome title
+      title_teaser:
+        description: The title for the content
+        type: string
+        example: An awesome teaser title
+      description:
+        description: The desription for the content
+        type: string
+        example: An awesome description
+      description_teaser:
+        description: The teaser desription for the content
+        type: string
+        example: An awesome description
+      image:
+        description: The featured image url
+        type: string
+        example: http://somedomain.com/aewesome-image.png
+      content_type:
+        description: The content type of the teaser
+        type: string
+        enum: [article, car]
+      url:
+        description: The absolute url to the content
+        type: string
+        example: http://somedomain.com/aweseome-content
+      active:
+        description: The cotents publish status, 1 for published 0 for non published
+        type: integer
+        enum: [0, 1]
+      categories:
+        description: The categories of the content
+        type: array
+        items:
+          $ref: '#/definitions/Category'
+      tags:
+        description: The tags of the content
+        type: array
+        items:
+          $ref: '#/definitions/Tag'
+      body:
+        description: The body of the content
+        type: string
+        example: An awesome body text
+      meta:
+        $ref: '#/definitions/Meta'
+  BulkTeaser:
+    allOf:
+      - $ref: '#/definitions/Teaser'
+    properties:
+      id:
+        description: put empty string to create new object
+        type: string
+        example: ""
+  BulkTeaserUpdate:
+    allOf:
+      - $ref: '#/definitions/Teaser'
+    properties:
+      id:
+        description: put the id of the object to update existing object
+        type: string
+        example: AVhTKzQKV8poqlzpyNyc
+  BulkBody:
+    description: An array of teasers to index
+    type: array
+    items: [$ref: '#/definitions/BulkTeaser', $ref: '#/definitions/BulkTeaserUpdate']
+  BulkResponseBody:
+    description: An array of id's and statuses
+    type: array
+    items: [$ref: '#/definitions/BulkResponseCreated', $ref: '#/definitions/BulkResponseUpdated']
+  SearchHits:
+    description: The matching teasers
+    type: array
+    items: [$ref: '#/definitions/BulkTeaserUpdate']
+  SearchBody:
+    type: object
+    required:
+      - locale
+    properties:
+      locale:
+        description: The locale for the content
+        type: string
+        enum: [da_dk, sv_se, nb_no, fi_fi, en_gb]
+      body:
+        description: The raw ElasticSearch query
+        type: object
+  SearchResponse:
+    type: object
+    properties:
+      total:
+        description: The toal number of teasers that match the search
+        type: integer
+        example: 8
+      hits:
+        $ref: '#/definitions/SearchHits'

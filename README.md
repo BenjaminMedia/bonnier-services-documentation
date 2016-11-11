@@ -1,5 +1,4 @@
-# IndexSearch OpenAPI Specification
-[![Build Status](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation.svg?branch=master)](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation)
+# IndexSearch OpenAPI Specification [![Build Status](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation.svg?branch=index-search)](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation)
 
 ## Steps to finish
 
