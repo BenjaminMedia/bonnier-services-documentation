@@ -2,6 +2,8 @@
 # It doesn't cover all OpenAPI features. For more full example check out: https://github.com/APIs-guru/petstore_extended
 
 
+
+
 swagger: '2.0'
 # You should specify common part of your endpoints in the following format:
 #   <schemes>://<host><basepath>
