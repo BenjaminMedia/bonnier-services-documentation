@@ -1,13 +1,11 @@
 # This is an **example** API to demontstrate features of OpenAPI specification.
 # It doesn't cover all OpenAPI features. For more full example check out: https://github.com/APIs-guru/petstore_extended
 
-
 swagger: '2.0'
 # You should specify common part of your endpoints in the following format:
 #   <schemes>://<host><basepath>
 schemes:
   - http # Remove if your API doesn't support HTTP
-  
 host: api2.bm-data.com # Replace with your hostname. You can also specify port e.g. example.com:777
 basePath: /services/bm400/ # Replace with your basePath. Note: SHOULD begin with '/'.
 info:
@@ -22,13 +20,10 @@ info:
   # It can be any string but it is better to use semantic versioning: http://semver.org/
   # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
 
-  title: GetCampaignInfo # Replace with your API title
-  # Keep it simple. Don't add "API" or verison at the end of the string.
+  title: GetCampaignInfo 
 
-  termsOfService: 'https://example.com/terms/' # [Optional] Replace with an URL to your ToS
   contact:
     email: kirsten.ostergaard@bmd.bonnier.dk # [Optional] Replace with your contact email
-    url: 'http://example.com/contact' # [Optional] Replace with link to your contact form
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
@@ -54,8 +49,6 @@ consumes:
 # A list of tags used by the specification with additional metadata.
 # The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
-  - name: Echo
-    description: Example echo operations
   - name: Campaign
     description: Operations about campaigns
 # Security scheme definitions that can be used across the specification.
