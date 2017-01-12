@@ -136,6 +136,32 @@ definitions:
           description: SomeTextHere
           type: integer
           example: 3042943
+        Name:
+          description: SomeTextHere
+          type: string
+          example: "3 nr 99,90kr + 39,50kr"
+        ProductCode:
+          description: ProductCode
+          type: string
+          example: ATR
+        Issues:
+          description: Number of issues in offer
+          type: integer
+          example: 3
+        IntroFee:
+          description: AdministrationFee
+          type: number
+          format: float
+          example: 39.5000
+        TotalPrice:
+          description: Total price to be payed
+          type: number
+          format: float
+          example: 139.4000
+        Responsecode:
+          description: Couponcode / responsecode for this offer
+          type: integer
+          example: 65234309
   Premiums:
     type: array
     items:
@@ -144,6 +170,15 @@ definitions:
           description: Name of premium
           type: string
           example: "Craft Baselayer Sort M"
+        ItemNumber:
+          description: Article number
+          type: string
+          example: "911442"
+        ItemValue: 
+          description: Value of this article
+          type: number
+          format: float
+          example: 450.0000
   Medias:
     type: array
     items:
@@ -152,12 +187,16 @@ definitions:
           description: Name of media
           type: string
           example: AboHeader
+        PromotionTypeName:
+          description: SomethingSomething
+          type: string
+          example: Egne sites
   PaymentTypes:
     type: array
     items:
       properties:
         Name:
-          description: Way of payment
+          description: Payment method
           type: string
           enum: ["Web", "WebPay", "WebBank"]
   Campaign:
