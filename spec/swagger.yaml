@@ -7,7 +7,7 @@ swagger: '2.0'
 schemes:
   - http # Remove if your API doesn't support HTTP
 host: api2.bm-data.com # Replace with your hostname. You can also specify port e.g. example.com:777
-basePath: /services/bm400/ # Replace with your basePath. Note: SHOULD begin with '/'.
+basePath: /services/bm400/CMDBAPI.asmx/ # Replace with your basePath. Note: SHOULD begin with '/'.
 info:
   # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
   description: |
@@ -29,9 +29,6 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   x-logo:
     url: 'https://apis.guru/openapi-template/logo.png'
-externalDocs:
-  description: Find out how to create Github repo for your OpenAPI spec.
-  url: 'https://github.com/Rebilly/generator-openapi-repo'
 produces:
   # List of mime types your API endpoins can return.
   # This is a global default. You can OVERWRITE it in each specific operation.
@@ -52,21 +49,7 @@ tags:
   - name: Campaign
     description: Operations about campaigns
 # Security scheme definitions that can be used across the specification.
-securityDefinitions:
-  main_auth: # security definition name (you can name it as you want)
-    type: oauth2 # authorization type, one of: oauth2, basic, apiKey
-    # the following options are specific to oauth2 type
-    authorizationUrl: 'http://example.com/api/oauth/dialog'
-    flow: implicit
-    scopes:
-      'read:campaign': read campaign info
-  api_key: # security definition name (you can name it as you want)
-    type: apiKey
-    # The following options are specific to apiKey type
-    in: header # Where API key will be passed: header or query
-    name: api_key # API key paramteer name
-  basic_auth: # security definition name (you can name it as you want)
-    type: basic
+
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL. 
@@ -80,11 +63,11 @@ paths:
         - Campaign
       
       # summary is up to 120 symbold but we recommend to be shortest as possible
-      summary: Get campaign info by campaign Id
+      summary: Search for Campaign details using CampaignId
       
       # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
       description: | 
-        Get campaign details based on Id
+        Secutity - ip protection
       
       # operationId should be unique across the whole specification
       operationId: GetCampaignInfo
@@ -93,7 +76,7 @@ paths:
       parameters:
         - name: CampaignId
           in: query
-          description: 'Id of the campaign that needs to be fetched'
+          description: Id of the campaign that needs to be fetched
           required: true
           type: string
         - name: serviceID
@@ -102,12 +85,7 @@ paths:
           required: true
           type: string
       
-      # security schemas applied to this operation
-      security:
-        - main_auth:
-          - 'read:campaign' # for auth2 provide list of scopes here
-        - api_key: []
-      # overwriting default global produces
+      
       produces:
         - application/json
       responses: # list of responses
@@ -120,10 +98,8 @@ paths:
           # repsonse samples for each type operation produces
             application/json:
               CampaignID: 324801
-        '403':
-          description: Forbidden
-        '404':
-          description: Campaign not found
+        '500':
+          description: Exception, internal error
    
 # An object to hold data types that can be consumed and produced by operations.
 # These data types can be primitives, arrays or models.
@@ -133,15 +109,15 @@ definitions:
     items:
       properties:
         Id:
-          description: SomeTextHere
+          description: OfferId. Key identifier for Offers
           type: integer
           example: 3042943
         Name:
-          description: SomeTextHere
+          description: A brief description of the offer. For internal use.
           type: string
           example: "3 nr 99,90kr + 39,50kr"
         ProductCode:
-          description: ProductCode
+          description: A 3 letter abreviation for the products (magazines)
           type: string
           example: ATR
         Issues:
@@ -149,7 +125,7 @@ definitions:
           type: integer
           example: 3
         IntroFee:
-          description: AdministrationFee
+          description: Administration fee / postage fee
           type: number
           format: float
           example: 39.5000
@@ -159,7 +135,7 @@ definitions:
           format: float
           example: 139.4000
         Responsecode:
-          description: Couponcode / responsecode for this offer
+          description: Identifier for this campaign offer
           type: integer
           example: 65234309
   Premiums:
@@ -257,7 +233,7 @@ definitions:
         items: 
           $ref: '#/definitions/Medias'
       PaymentTypes:
-        description: Means of payment
+        description: Payment method
         type: string
         items: 
           $ref: '#/definitions/PaymentTypes'
