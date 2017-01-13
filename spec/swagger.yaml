@@ -96,6 +96,31 @@ paths:
           # repsonse samples for each type operation produces
             application/json:
               CampaignID: 324801
+              Title: "3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder"
+              Currency: "SEK"
+              ValidFrom: "2016-12-20T00:00:00"
+              ValidTo: "2016-12-20T00:00:00"
+              ActivityCode: 11
+              ActivityName: "Internet Intern egne sites"
+              Market: "Sweden"
+              Language: "sv"
+              Offers:
+                Id: 3042943
+                Name: "3 nr 99,90kr + 39,50kr"
+                ProcuctCode: "ATR"
+                Issues: 3
+                IntroFee: 39.5000
+                TotalPrice: 139.4000
+                ResponseCode: 65234309
+              Premiums: 
+                ItemName: "Craft Baselayer Sort M"
+                ItemNumber: "911442"
+                ItemValue: 450.0000
+              Media:
+                Name: "AboHeader"
+                PromotionTypeName: "Egne sites"
+              PaymentTypes:
+                Name: "Web"
         '500':
           description: Exception, internal error
    
@@ -158,11 +183,11 @@ definitions:
     items:
       properties:
         Name:
-          description: Name of media
+          description: Place of campaign occurrence in media
           type: string
           example: AboHeader
         PromotionTypeName:
-          description: SomethingSomething
+          description: Name of media where the campaign occurs
           type: string
           example: Egne sites
   PaymentTypes:
@@ -172,12 +197,12 @@ definitions:
         Name:
           description: Payment method
           type: string
-          enum: ["Web", "WebPay", "WebBank"]
+          example: Web
   Campaign:
     type: object
     properties:
       CampaignID:
-        description: Key value
+        description: Key value for campaign
         type: integer
         minLength: 6
         example: 324801
@@ -200,11 +225,11 @@ definitions:
         format: date
         example: "2016-12-20T00:00:00"
       ActivityCode:
-        description: SomeTextHere
+        description: Channel code
         type: integer
         example: 11
       ActivityName:
-        description: SomeTextHere
+        description: Channel name
         type: string
         example: Internet Intern egne sites
       Market:
@@ -232,6 +257,6 @@ definitions:
           $ref: '#/definitions/Medias'
       PaymentTypes:
         description: Payment method
-        type: string
+        type: array
         items: 
           $ref: '#/definitions/PaymentTypes'
