@@ -102,6 +102,7 @@ paths:
               Locale: "sv-SE"
               Language: "sv"
               Currency: "SEK"
+              ShowInSweedish: false
               Offers:
                 ResponseCode: 65234309
                 Name: "3 nr 99,90kr + 39,50kr"
@@ -168,6 +169,10 @@ definitions:
         description: Currency of campaign
         type: string
         example: SEK
+      ShowInSweedish:
+        description: Relevant for Swedish customers in Finland
+        type: boolean
+        example: false
       Offers:
         description: Campaign offers
         type: array
