@@ -97,107 +97,43 @@ paths:
             application/json:
               CampaignID: 324801
               Title: "3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder"
-              Currency: "SEK"
               ValidFrom: "2016-12-20T00:00:00"
               ValidTo: "2016-12-20T00:00:00"
-              ActivityCode: 11
-              ActivityName: "Internet Intern egne sites"
-              Market: "Sweden"
+              Locale: "sv-SE"
               Language: "sv"
+              Currency: "SEK"
               Offers:
-                Id: 3042943
+                ResponseCode: 65234309
                 Name: "3 nr 99,90kr + 39,50kr"
                 ProcuctCode: "ATR"
                 Issues: 3
+                OfferText: "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li></ul>"
+                AcceptText: "<ul> <li>3 nr av Aktiv Träning + premie för 99,90 kr + 39,50 kr. i porto och exp. Totalt 139,40 kr.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nr)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li/> </ul>"
+                NextPeriodText: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
+                InvoiceFeeText: "(+ 10 kr)"
+                IntroPrice: 99.90
                 IntroFee: 39.5000
+                InvoiceFee: 10.00
+                ListPrice: 72.90
+                ListFee: 00.00
                 TotalPrice: 139.4000
-                ResponseCode: 65234309
+                DibsRecurring: true
+                ConditionType: "Subscription"
+                Medias:
+                  Name: "AboHeader"
+                  PaymentTypes:
+                    Name: "Web"
               Premiums: 
-                ItemName: "Craft Baselayer Sort M"
-                ItemNumber: "911442"
-                ItemValue: 450.0000
-              Media:
-                Name: "AboHeader"
-                PromotionTypeName: "Egne sites"
-              PaymentTypes:
-                Name: "Web"
+                ArticleName: "Craft Baselayer Sort M"
+                ArticleNumber: "911442"
+                ArticleValue: 450.0000
         '500':
           description: Exception, internal error
    
 # An object to hold data types that can be consumed and produced by operations.
 # These data types can be primitives, arrays or models.
 definitions:
-  Offers:
-    type: array
-    items:
-      properties:
-        Id:
-          description: OfferId. Key identifier for Offers
-          type: integer
-          example: 3042943
-        Name:
-          description: A brief description of the offer. For internal use.
-          type: string
-          example: "3 nr 99,90kr + 39,50kr"
-        ProductCode:
-          description: A 3 letter abreviation for the products (magazines)
-          type: string
-          example: ATR
-        Issues:
-          description: Number of issues in offer
-          type: integer
-          example: 3
-        IntroFee:
-          description: Administration fee / postage fee
-          type: number
-          format: float
-          example: 39.5000
-        TotalPrice:
-          description: Total price to be payed
-          type: number
-          format: float
-          example: 139.4000
-        Responsecode:
-          description: Identifier for this campaign offer
-          type: integer
-          example: 65234309
-  Premiums:
-    type: array
-    items:
-      properties:
-        ItemName: 
-          description: Name of premium
-          type: string
-          example: "Craft Baselayer Sort M"
-        ItemNumber:
-          description: Article number
-          type: string
-          example: "911442"
-        ItemValue: 
-          description: Value of this article
-          type: number
-          format: float
-          example: 450.0000
-  Medias:
-    type: array
-    items:
-      properties:
-        Name:
-          description: Place of campaign occurrence in media
-          type: string
-          example: AboHeader
-        PromotionTypeName:
-          description: Name of media where the campaign occurs
-          type: string
-          example: Egne sites
-  PaymentTypes:
-    type: array
-    items:
-      properties:
-        Name:
-          description: Payment method
-          type: string
-          example: Web
+  
   Campaign:
     type: object
     properties:
@@ -210,10 +146,6 @@ definitions:
         description: Campaign title
         type: string
         example: 3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder
-      Currency:
-        description: Currency of campaign
-        type: string
-        example: SEK
       ValidFrom:
         description: Campaign valid from
         type: string
@@ -224,39 +156,146 @@ definitions:
         type: string
         format: date
         example: "2016-12-20T00:00:00"
-      ActivityCode:
-        description: Channel code
-        type: integer
-        example: 11
-      ActivityName:
-        description: Channel name
-        type: string
-        example: Internet Intern egne sites
-      Market:
+      Locale:
         description: Customer market
         type: string
-        example: Sweden
+        example: "sv-SE"
       Language:
         description: Campaign language
         type: string
         example: sv
+      Currency:
+        description: Currency of campaign
+        type: string
+        example: SEK
       Offers:
         description: Campaign offers
         type: array
         items: 
           $ref: '#/definitions/Offers'
       Premiums:
-        description: Premiums as part of the offer
+        description: The premiums that can be chosen with this offer.
         type: array
         items:
           $ref: '#/definitions/Premiums'
-      Medias:
-        description: Which media displays the campaign
-        type: array
-        items: 
-          $ref: '#/definitions/Medias'
       PaymentTypes:
         description: Payment method
         type: array
         items: 
           $ref: '#/definitions/PaymentTypes'
+  Offers:
+    type: array
+    items:
+      properties:
+        ResponseCode:
+          description: A k a CouponCode. A value that uniquely defines the offer
+          type: integer
+          example: 65234309
+        Name:
+          description: A brief description of the offer. For internal use.
+          type: string
+          example: "3 nr 99,90kr + 39,50kr"
+        ProductCode:
+          description: A 3 letter abreviation for the products (magazines)
+          type: string
+          example: ATR
+        Issues:
+          description: Number of issues in offer
+          type: integer
+          example: 3
+        OfferText:
+          description: Text to present the offer, price, premium and conditions
+          type: string
+          example: "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li></ul>"
+        AcceptText:
+          description: Text to repeat the offer and conditions. Is shown to the customer right before checkout
+          type: string
+          example: "<ul> <li>3 nr av Aktiv Träning + premie för 99,90 kr + 39,50 kr. i porto och exp. Totalt 139,40 kr.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nr)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li/> </ul>"
+        NextPeriodText:
+          description: Description of the subscription terms
+          type: string
+          example: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
+        InvoiceFeeText:
+          description: The price as a text for the shop
+          type: string
+          example: "(+ 10 kr)"
+        IntroPrice: 
+          description: The offer price for the issues of the magazine without a premium
+          type: number
+          format: float
+          example: 99.90
+        IntroFee:
+          description: Administration fee / postage fee
+          type: number
+          format: float
+          example: 39.5000
+        InvoiceFee: 
+          description: The price for sending a printed invoice
+          type: number
+          format: float
+          example: 10.00
+        ListPrice: 
+          description: The price for one issue
+          type: number
+          format: float
+          example: 72.90
+        ListFee:
+          description: P.T. unknown
+          type: number
+          format: float
+          example: 0.00
+        TotalPrice:
+          description: Total price to be payed
+          type: number
+          format: float
+          example: 139.4000
+        DibsRecurring:
+          description: True if ConditionType = Subscription
+          type: boolean
+          example: true
+        ConditionType:
+          description: Subscription or otherwise
+          type: string
+          example: "Subscription"
+        Medias:
+          description: Which media displays the campaign
+          type: array
+          items: 
+            $ref: '#/definitions/Medias'
+  Premiums:
+    type: array
+    items:
+      properties:
+        ArticleName: 
+          description: Name of premium
+          type: string
+          example: "Craft Baselayer Sort M"
+        ArticleNumber:
+          description: Article number
+          type: string
+          example: "911442"
+        ArticleValue: 
+          description: Value of this article
+          type: number
+          format: float
+          example: 450.0000
+  Medias:
+    type: array
+    items:
+      properties:
+        Name:
+          description: Place of campaign occurrence in media
+          type: string
+          example: AboHeader
+        PaymentTypes:
+          type: array
+          items: 
+            $ref: '#/definitions/PaymentTypes'
+  PaymentTypes:
+    type: array
+    items:
+      properties:
+        Name:
+          description: Payment method
+          type: string
+          example: Web
