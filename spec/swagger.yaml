@@ -13,6 +13,7 @@ info:
   description: |
     Returns a json-representation of the selected campaign
     # Introduction
+    
     **TEST**
     The test form is only available for requests from the local machine
 
@@ -47,7 +48,13 @@ consumes:
 # The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
   - name: Campaign
-    description: Operations about campaigns
+    description: Operations about campaigns. 
+    
+    
+      This documentation is based on the assumption, that a campaign can present several offers for a given number of issues, together with one or more premiums, that can be chosen as part of the offer. The premiums will not necessarily be the same for every offer, and the possible payment types may vary per media. 
+      
+      
+      It has been decided to omit some of the variables that is contained in the (old) webservice "GetCampaignInfoXmlStringPure", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.
 # Security scheme definitions that can be used across the specification.
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
@@ -113,7 +120,7 @@ paths:
                 NextPeriodText: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
                 InvoiceFeeText: "(+ 10 kr)"
                 IntroPrice: 99.90
-                IntroFee: 39.5000
+                IntroFee: 39.50
                 InvoiceFee: 10.00
                 ListPrice: 72.90
                 ListFee: 00.00
@@ -124,17 +131,16 @@ paths:
                   Name: "AboHeader"
                   PaymentTypes:
                     Name: "Web"
-              Premiums: 
-                ArticleName: "Craft Baselayer Sort M"
-                ArticleNumber: "911442"
-                ArticleValue: 450.0000
+                Premiums: 
+                  ArticleName: "Craft Baselayer Sort M"
+                  ArticleNumber: "911442"
+                  ArticleValue: 450.0000
         '500':
           description: Exception, internal error
    
 # An object to hold data types that can be consumed and produced by operations.
 # These data types can be primitives, arrays or models.
 definitions:
-  
   Campaign:
     type: object
     properties:
@@ -178,16 +184,6 @@ definitions:
         type: array
         items: 
           $ref: '#/definitions/Offers'
-      Premiums:
-        description: The premiums that can be chosen with this offer.
-        type: array
-        items:
-          $ref: '#/definitions/Premiums'
-      PaymentTypes:
-        description: Payment method
-        type: array
-        items: 
-          $ref: '#/definitions/PaymentTypes'
   Offers:
     type: array
     items:
@@ -233,27 +229,22 @@ definitions:
           description: Administration fee / postage fee
           type: number
           format: float
-          example: 39.5000
+          example: 39.50
         InvoiceFee: 
           description: The price for sending a printed invoice
           type: number
-          format: float
+          format: float  
           example: 10.00
         ListPrice: 
           description: The price for one issue
           type: number
           format: float
           example: 72.90
-        ListFee:
-          description: P.T. unknown
-          type: number
-          format: float
-          example: 0.00
         TotalPrice:
           description: Total price to be payed
           type: number
           format: float
-          example: 139.4000
+          example: 139.40
         DibsRecurring:
           description: True if ConditionType = Subscription
           type: boolean
@@ -267,23 +258,11 @@ definitions:
           type: array
           items: 
             $ref: '#/definitions/Medias'
-  Premiums:
-    type: array
-    items:
-      properties:
-        ArticleName: 
-          description: Name of premium
-          type: string
-          example: "Craft Baselayer Sort M"
-        ArticleNumber:
-          description: Article number
-          type: string
-          example: "911442"
-        ArticleValue: 
-          description: Value of this article
-          type: number
-          format: float
-          example: 450.0000
+        Premiums:
+          description: The premiums that can be chosen with this offer.
+          type: array
+          items:
+            $ref: '#/definitions/Premiums'
   Medias:
     type: array
     items:
@@ -304,3 +283,20 @@ definitions:
           description: Payment method
           type: string
           example: Web
+  Premiums:
+    type: array
+    items:
+      properties:
+        ArticleName: 
+          description: Name of premium
+          type: string
+          example: "Craft Baselayer Sort M"
+        ArticleNumber:
+          description: Article number
+          type: string
+          example: "911442"
+        ArticleValue: 
+          description: Value of this article
+          type: number
+          format: float
+          example: 450.00
