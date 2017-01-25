@@ -21,7 +21,7 @@ info:
   # It can be any string but it is better to use semantic versioning: http://semver.org/
   # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
 
-  title: GetCampaignInfo 
+  title: New Magazine Shop 
 
   contact:
     email: kirsten.ostergaard@bmd.bonnier.dk # [Optional] Replace with your contact email
@@ -50,11 +50,14 @@ tags:
   - name: Campaign
     description: Operations about campaigns. 
     
+      Returns a json-representation of the selected campaign.
+    
     
       This documentation is based on the assumption, that a campaign can present several offers for a given number of issues, together with one or more premiums, that can be chosen as part of the offer. The premiums will not necessarily be the same for every offer, and the possible payment types may vary per media. 
       
       
       It has been decided to omit some of the variables that is contained in the (old) webservice "GetCampaignInfoXmlStringPure", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.
+      
 # Security scheme definitions that can be used across the specification.
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
@@ -120,20 +123,20 @@ paths:
                 NextPeriodText: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
                 InvoiceFeeText: "(+ 10 kr)"
                 IntroPrice: "99,90"
-                IntroFee: "39m50"
+                IntroFee: "39,50"
                 InvoiceFee: "10,00"
                 ListPrice: "72,90"
                 TotalPrice: "139,40"
                 DibsRecurring: true
                 ConditionType: "Subscription"
-                Medias:
-                  Name: "AboHeader"
-                  PaymentTypes:
-                    Name: "Web"
                 Premiums: 
                   ArticleName: "Craft Baselayer Sort M"
                   ArticleNumber: "911442"
                   ArticleValue: "450,00"
+              Medias:
+                Name: "AboHeader"
+                PaymentTypes:
+                  Name: "Web"
         '500':
           description: Exception, internal error
    
