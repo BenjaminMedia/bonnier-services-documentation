@@ -6,53 +6,35 @@ swagger: '2.0'
 #   <schemes>://<host><basepath>
 schemes:
   - http # Remove if your API doesn't support HTTP
-  - https # Remove if your API donsn't support HTTPS
-host: example.com # Replace with your hostname. You can also specify port e.g. example.com:777
-basePath: /api/v1 # Replace with your basePath. Note: SHOULD begin with '/'.
+host: api2.bm-data.com # Replace with your hostname. You can also specify port e.g. example.com:777
+basePath: /services/bm400/CMDBAPI.asmx/ # Replace with your basePath. Note: SHOULD begin with '/'.
 info:
   # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
   description: |
-    This is an **example** API to demontstrate features of OpenAPI specification
+    Returns a json-representation of the selected campaign
     # Introduction
-    This specification is intended to to be a good starting point for describint your API in 
-    [OpenAPI/Swagger format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md).
-    It also demonstrates features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo) tool and 
-    [ReDoc](https://github.com/Rebilly/ReDoc) documentation engine. So beyond the standard OpenAPI syntax we use a few 
-    [vendor extensions](https://github.com/Rebilly/ReDoc/blob/master/docs/redoc-vendor-extensions.md).
     
-    # OpenAPI Specification
-    The goal of The OpenAPI Specification is to define a standard, language-agnostic interface to REST APIs which
-    allows both humans and computers to discover and understand the capabilities of the service without access to source
-    code, documentation, or through network traffic inspection. When properly defined via OpenAPI, a consumer can 
-    understand and interact with the remote service with a minimal amount of implementation logic. Similar to what
-    interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
+    **TEST**
+    The test form is only available for requests from the local machine
 
   version: '1.0.0' # Your API version
   # It can be any string but it is better to use semantic versioning: http://semver.org/
   # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
 
-  title: Example.com # Replace with your API title
-  # Keep it simple. Don't add "API" or verison at the end of the string.
+  title: New Magazine Shop 
 
-  termsOfService: 'https://example.com/terms/' # [Optional] Replace with an URL to your ToS
   contact:
-    email: contact@example.com # [Optional] Replace with your contact email
-    url: 'http://example.com/contact' # [Optional] Replace with link to your contact form
+    email: kirsten.ostergaard@bmd.bonnier.dk # [Optional] Replace with your contact email
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   x-logo:
-    url: 'https://apis.guru/openapi-template/logo.png'
-externalDocs:
-  description: Find out how to create Github repo for your OpenAPI spec.
-  url: 'https://github.com/Rebilly/generator-openapi-repo'
+    url: 'http://www.bonnier.com/Global/Images/Bonnier_logotype.png'
 produces:
   # List of mime types your API endpoins can return.
   # This is a global default. You can OVERWRITE it in each specific operation.
   # Remove the ones not used in your API
   - application/json
-  - application/xml
-  - text/csv
   # you can add any mime type your API produces to the list
 consumes:
   # List of mime types your API endpoins consumes.
@@ -65,182 +47,256 @@ consumes:
 # A list of tags used by the specification with additional metadata.
 # The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
-  - name: Echo
-    description: Example echo operations
-  - name: User
-    description: Operations about user
+  - name: Campaign
+    description: Operations about campaigns. 
+    
+      Returns a json-representation of the selected campaign.
+    
+    
+      This documentation is based on the assumption, that a campaign can present several offers for a given number of issues, together with one or more premiums, that can be chosen as part of the offer. The premiums will not necessarily be the same for every offer, and the possible payment types may vary per media. 
+      
+      
+      It has been decided to omit some of the variables that is contained in the (old) webservice "GetCampaignInfoXmlStringPure", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.
+      
 # Security scheme definitions that can be used across the specification.
-securityDefinitions:
-  main_auth: # security definition name (you can name it as you want)
-    type: oauth2 # authorization type, one of: oauth2, basic, apiKey
-    # the following options are specific to oauth2 type
-    authorizationUrl: 'http://example.com/api/oauth/dialog'
-    flow: implicit
-    scopes:
-      'read:users': read users info
-      'write:users': modify or remove users
-  api_key: # security definition name (you can name it as you want)
-    type: apiKey
-    # The following options are specific to apiKey type
-    in: header # Where API key will be passed: header or query
-    name: api_key # API key paramteer name
-  basic_auth: # security definition name (you can name it as you want)
-    type: basic
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL. 
 paths:
-  '/users/{username}': # path parameter in curly braces
+  '/GetCampaignInfo': # path parameter in curly braces
     # documentation for GET operation for this path
     
     # parameters list that are used with each operation for this path
-    parameters:
-      - name: pretty_print
-        in: query # place where paramter is passed: path, header, query or body, formData
-        description: Pretty print response
-        # type of the paramter: string, number, integer, boolean, array
-        type: boolean
     get:
       tags:
-        - User
+        - Campaign
       
       # summary is up to 120 symbold but we recommend to be shortest as possible
-      summary: Get user by user name
+      summary: Search for Campaign details using CampaignId
       
       # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
       description: | 
-        Some description of the operation. 
-        You can use `markdown` here.
+        Secutity - ip protection
       
       # operationId should be unique across the whole specification
-      operationId: getUserByName
+      operationId: GetCampaignInfo
       
       # list of parameters for the operation
       parameters:
-        - name: username
-          in: path
-          description: 'The name that needs to be fetched'
+        - name: CampaignId
+          in: query
+          description: Id of the campaign that needs to be fetched
           required: true
           type: string
-        - name: with_email
+        - name: serviceID
           in: query
-          description: Filter users without email
-          type: boolean
+          description: Username / ruleset for the campaign
+          required: true
+          type: string
       
-      # security schemas applied to this operation
-      security:
-        - main_auth:
-          - 'read:users' # for auth2 provide list of scopes here
-        - api_key: []
-      # overwriting default global produces
       produces:
         - application/json
       responses: # list of responses
         '200':
           description: Success
           schema: # response schema can be specified for each response
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/Campaign'
+            
           examples:
           # repsonse samples for each type operation produces
             application/json:
-              username: user1
-              email: user@example.com
-        '403':
-          description: Forbidden
-        '404':
-          description: User not found
-    # documentation for PUT operation for this path
-    put:
-      tags:
-        - User
-      summary: Updated user
-      description: This can only be done by the logged in user.
-      operationId: updateUser
-      produces:
-        - application/json
-      parameters:
-        - name: username
-          in: path
-          description: The name that needs to be updated
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Updated user object
-          required: true
-          # for body parameter you should specify request schema instead of type
-          schema:
-            $ref: '#/definitions/User'
-      security:
-        - main_auth:
-          - 'write:users'
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Invalid user supplied
-        '404':
-          description: User not found
-  
-  '/echo':
-    post:
-      tags:
-        - Echo
-      summary: Echo test
-      description: Receive the exact message you've sent
-      operationId: echo
-      parameters:
-        - name: message
-          in: body
-          description: 'Echo payload'
-          required: true
-          schema:
-            type: string
-            example: 'Hello world!'
-      security:
-        - api_key: []
-      responses:
-        '200':
-          description: 'OK'
-          examples:
-            'application/json': 'Hello world!'
-          schema:
-            type: string
-          # docuemnt headers for this repsonse
-          headers:
-            X-Rate-Limit: # Header name
-              type: integer # Header value type
-              format: int32 # Header value format
-              description: calls per hour allowed by the user
-            X-Expires-After:
-              type: string
-              format: date-time
-              description: date in UTC when token expires
+              CampaignID: 324801
+              Title: "3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder"
+              ValidFrom: "2016-12-20T00:00:00"
+              ValidTo: "2016-12-20T00:00:00"
+              Locale: "sv-SE"
+              Language: "sv"
+              Currency: "SEK"
+              ShowInSwedish: false
+              Offers:
+                ResponseCode: 65234309
+                Name: "3 nr 99,90kr + 39,50kr"
+                ProcuctCode: "ATR"
+                Issues: 3
+                OfferText: "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li></ul>"
+                AcceptText: "<ul> <li>3 nr av Aktiv Träning + premie för 99,90 kr + 39,50 kr. i porto och exp. Totalt 139,40 kr.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nr)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li/> </ul>"
+                NextPeriodText: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
+                InvoiceFeeText: "(+ 10 kr)"
+                IntroPrice: "99,90"
+                IntroFee: "39,50"
+                InvoiceFee: "10,00"
+                ListPrice: "72,90"
+                TotalPrice: "139,40"
+                DibsRecurring: true
+                ConditionType: "Subscription"
+                Premiums: 
+                  ArticleName: "Craft Baselayer Sort M"
+                  ArticleNumber: "911442"
+                  ArticleValue: "450,00"
+              Medias:
+                Name: "AboHeader"
+                PaymentTypes:
+                  Name: "Web"
+        '500':
+          description: Exception, internal error
+   
 # An object to hold data types that can be consumed and produced by operations.
 # These data types can be primitives, arrays or models.
 definitions:
-  Email:
-    description: User email address
-    type: string
-    format: email
-    example: john.smith@example.com
-  User:
+  Campaign:
     type: object
     properties:
-      username:
-        description: User supplied username
+      CampaignID:
+        description: Key value for campaign
+        type: integer
+        minLength: 6
+        example: 324801
+      Title:
+        description: Campaign title
         type: string
-        minLength: 4
-        example: John78
-      firstName:
-        description: User first name
+        example: 3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder
+      ValidFrom:
+        description: Campaign valid from
         type: string
-        minLength: 1
-        example: John
-      lastName:
-        description: User last name
+        format: date
+        example: "2016-12-20T00:00:00"
+      ValidTo:
+        description: Campaign valid from
         type: string
-        minLength: 1
-        example: Smith
-      email:
-        $ref: '#/definitions/Email'
+        format: date
+        example: "2016-12-20T00:00:00"
+      Locale:
+        description: Customer market
+        type: string
+        example: "sv-SE"
+      Language:
+        description: Campaign language
+        type: string
+        example: sv
+      Currency:
+        description: Currency of campaign
+        type: string
+        example: SEK
+      ShowInSweedish:
+        description: Relevant for Swedish customers in Finland
+        type: boolean
+        example: false
+      Offers:
+        description: Campaign offers
+        type: array
+        items: 
+          $ref: '#/definitions/Offers'
+      Medias:
+          description: Which media displays the campaign
+          type: array
+          items: 
+            $ref: '#/definitions/Medias'
+  Offers:
+    type: array
+    items:
+      properties:
+        ResponseCode:
+          description: A k a CouponCode. A value that uniquely defines the offer
+          type: integer
+          example: 65234309
+        Name:
+          description: A brief description of the offer. For internal use.
+          type: string
+          example: "3 nr 99,90kr + 39,50kr"
+        ProductCode:
+          description: A 3 letter abreviation for the products (magazines)
+          type: string
+          example: ATR
+        Issues:
+          description: Number of issues in offer
+          type: integer
+          example: 3
+        OfferText:
+          description: Text to present the offer, price, premium and conditions
+          type: string
+          example: "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li>
+            <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>
+            <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>
+            <li>Aktiv Träning utkommer 12 gånger om året.</li></ul>"
+        AcceptText:
+          description: Text to repeat the offer and conditions. Is shown to the customer right before checkout
+          type: string
+          example: "<ul> <li>3 nr av Aktiv Träning + premie för 99,90 kr + 39,50 kr. i porto och exp. Totalt 139,40 kr.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nr)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li/> </ul>"
+        NextPeriodText:
+          description: Description of the subscription terms
+          type: string
+          example: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
+        InvoiceFeeText:
+          description: The price as a text for the shop
+          type: string
+          example: "(+ 10 kr)"
+        IntroPrice: 
+          description: The offer price for the issues of the magazine without a premium
+          type: string
+          example: "99,90"
+        IntroFee:
+          description: Administration fee / postage fee
+          type: string
+          example: "39,50"
+        InvoiceFee: 
+          description: The price for sending a printed invoice
+          type: string 
+          example: "10,00"
+        ListPrice: 
+          description: The price for one issue
+          type: string
+          example: "72.90"
+        TotalPrice:
+          description: Total price to be payed
+          type: string
+          example: "139,40"
+        DibsRecurring:
+          description: True if ConditionType = Subscription
+          type: boolean
+          example: true
+        ConditionType:
+          description: Subscription or otherwise
+          type: string
+          example: "Subscription"
+        Premiums:
+          description: The premiums that can be chosen with this offer.
+          type: array
+          items:
+            $ref: '#/definitions/Premiums'
+  Medias:
+    type: array
+    items:
+      properties:
+        Name:
+          description: Place of campaign occurrence in media
+          type: string
+          example: AboHeader
+        PaymentTypes:
+          type: array
+          items: 
+            $ref: '#/definitions/PaymentTypes'
+  PaymentTypes:
+    type: array
+    items:
+      properties:
+        Name:
+          description: Payment method
+          type: string
+          example: Web
+  Premiums:
+    type: array
+    items:
+      properties:
+        ArticleName: 
+          description: Name of premium
+          type: string
+          example: "Craft Baselayer Sort M"
+        ArticleNumber:
+          description: Article number
+          type: string
+          example: "911442"
+        ArticleValue: 
+          description: Value of this article
+          type: number
+          format: float
+          example: 450.00
