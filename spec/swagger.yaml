@@ -1,30 +1,34 @@
-# This is an **example** API to demontstrate features of OpenAPI specification.
-# It doesn't cover all OpenAPI features. For more full example check out: https://github.com/APIs-guru/petstore_extended
 
 swagger: '2.0'
-# You should specify common part of your endpoints in the following format:
-#   <schemes>://<host><basepath>
 schemes:
-  - http # Remove if your API doesn't support HTTP
-host: api2.bm-data.com # Replace with your hostname. You can also specify port e.g. example.com:777
-basePath: /services/bm400/CMDBAPI.asmx/ # Replace with your basePath. Note: SHOULD begin with '/'.
+  - https 
+host: order.bm-data.com 
+basePath: /order.bm-data.com 
 info:
-  # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
+  
   description: |
-    Returns a json-representation of the selected campaign
     # Introduction
+    This document describes how to submit orders to Bonnier Magazine Data (BMD) from various campaign activities. Orders 3 validates parameters, queues the order in backend system, and replies in XML or JSON format
     
-    **TEST**
-    The test form is only available for requests from the local machine
+    # Test Data
+    For testing parameter validation, connection, character sets and similar you can use postal code 0000 (in DK and NO) or 00000 (in SE and FI) when submitting data
+    
+    
+    If you need to test a complete flow **including email confirmation and tracking callback** you must use postal code **8888** or **88888**.
+    
+    This way the backend system can recognize the test orders and stop them from being processed.
+    
+    If using postal code 0000/00000 you will receive reasoncode = 100 in the xml-response.
+    100 = order confirmed but ignored.
+    
+    **You can also use parameter TEST=1** In that case, the reject reason "100" will be returned
 
-  version: '1.0.0' # Your API version
-  # It can be any string but it is better to use semantic versioning: http://semver.org/
-  # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
+  version: '1.0.0' 
 
-  title: New Magazine Shop 
+  title: Orders3 API 
 
   contact:
-    email: kirsten.ostergaard@bmd.bonnier.dk # [Optional] Replace with your contact email
+    email: kirsten.ostergaard@bmd.bonnier.dk 
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
@@ -41,262 +45,649 @@ consumes:
   # This is a global default. You can OVERWRITE it in each specific operation.
   # Remove the ones not supported by your API
   - application/json
-  - application/xml
   # you can add any mime type your API consumes to the list
 
 # A list of tags used by the specification with additional metadata.
 # The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
-  - name: Campaign
-    description: Operations about campaigns. 
-    
-      Returns a json-representation of the selected campaign.
-    
-    
-      This documentation is based on the assumption, that a campaign can present several offers for a given number of issues, together with one or more premiums, that can be chosen as part of the offer. The premiums will not necessarily be the same for every offer, and the possible payment types may vary per media. 
-      
-      
-      It has been decided to omit some of the variables that is contained in the (old) webservice "GetCampaignInfoXmlStringPure", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.
-      
+  - name: Order
+    description: Submit order operations
+  - name: Confirm
+    description: Confirm order payment operations
+  - name: Register Donor
+    description: Submit giftcard order operations
+  - name: Register Donor Payment
+    description: Confirm giftcard order payment operations
+  - name: Redeem Gift Code
+    description: Submit information about receiver of gift card when this is redeemed
+  - name: Get Giftcard Status
+    description: Returns status and value of giftcard
 # Security scheme definitions that can be used across the specification.
+
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL. 
 paths:
-  '/GetCampaignInfo': # path parameter in curly braces
+  '/order/': # path parameter in curly braces
     # documentation for GET operation for this path
     
-    # parameters list that are used with each operation for this path
-    get:
+    post:
       tags:
-        - Campaign
+        - Order
       
-      # summary is up to 120 symbold but we recommend to be shortest as possible
-      summary: Search for Campaign details using CampaignId
+      summary: Send purchase order to the magazine shop
       
-      # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
       description: | 
+        
+        Place purchase order with the parameters `sid` and `la`
         Secutity - ip protection
-      
-      # operationId should be unique across the whole specification
-      operationId: GetCampaignInfo
+        
+      operationId: placeOrder
       
       # list of parameters for the operation
       parameters:
-        - name: CampaignId
+        - $ref: "#/parameters/sid"
+        - $ref: "#/parameters/la"
+        - name: type
           in: query
-          description: Id of the campaign that needs to be fetched
-          required: true
+          description: RequestType to indicate that this is an ORDER request
           type: string
-        - name: serviceID
-          in: query
-          description: Username / ruleset for the campaign
-          required: true
-          type: string
+          enum:
+            - 'ORDER'
+            - ''
+          default: ''
+        - $ref: "#/parameters/pk"
+        - $ref: "#/parameters/rc"
+        - $ref: "#/parameters/pr"
+        - $ref: "#/parameters/return"
+        - $ref: "#/parameters/pix"
+        - $ref: "#/parameters/sc"
+        - $ref: "#/parameters/onlinepay"
+        - $ref: "#/parameters/media"
+        - $ref: "#/parameters/activity"
+        - $ref: "#/parameters/device"
+        - $ref: "#/parameters/cnr"
+        - $ref: "#/parameters/fn"
+        - $ref: "#/parameters/ln"
+        - $ref: "#/parameters/en"
+        - $ref: "#/parameters/ad"
+        - $ref: "#/parameters/pc"
+        - $ref: "#/parameters/email"
+        - $ref: "#/parameters/phone"
+        - $ref: "#/parameters/mobile"
+        - $ref: "#/parameters/op"
+        - $ref: "#/parameters/fn2"
+        - $ref: "#/parameters/ln2"
+        - $ref: "#/parameters/en2"
+        - $ref: "#/parameters/ad2"
+        - $ref: "#/parameters/pc2"
       
       produces:
         - application/json
       responses: # list of responses
         '200':
-          description: Success
+          description: OK
           schema: # response schema can be specified for each response
-            $ref: '#/definitions/Campaign'
-            
-          examples:
-          # repsonse samples for each type operation produces
-            application/json:
-              CampaignID: 324801
-              Title: "3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder"
-              ValidFrom: "2016-12-20T00:00:00"
-              ValidTo: "2016-12-20T00:00:00"
-              Locale: "sv-SE"
-              Language: "sv"
-              Currency: "SEK"
-              ShowInSwedish: false
-              Offers:
-                ResponseCode: 65234309
-                Name: "3 nr 99,90kr + 39,50kr"
-                ProcuctCode: "ATR"
-                Issues: 3
-                OfferText: "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li></ul>"
-                AcceptText: "<ul> <li>3 nr av Aktiv Träning + premie för 99,90 kr + 39,50 kr. i porto och exp. Totalt 139,40 kr.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nr)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li/> </ul>"
-                NextPeriodText: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
-                InvoiceFeeText: "(+ 10 kr)"
-                IntroPrice: "99,90"
-                IntroFee: "39,50"
-                InvoiceFee: "10,00"
-                ListPrice: "72,90"
-                TotalPrice: "139,40"
-                DibsRecurring: true
-                ConditionType: "Subscription"
-                Premiums: 
-                  ArticleName: "Craft Baselayer Sort M"
-                  ArticleNumber: "911442"
-                  ArticleValue: "450,00"
-              Medias:
-                Name: "AboHeader"
-                PaymentTypes:
-                  Name: "Web"
+            $ref: '#/definitions/ReturnParameters'
+          
         '500':
-          description: Exception, internal error
-   
+          description: Internal server error
+  
+  '/confirm':
+    post:
+      tags:
+        - Confirm
+      summary: Confirm order payment
+      description: Confirms that payment have been received and states if the payment is recurring
+      operationId: confirm
+      parameters:
+        - $ref: "#/parameters/sid"
+        - $ref: "#/parameters/la"
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a CONFIRM request
+          required: true
+          type: string
+          enum:
+            - 'CONFIRM'
+        - $ref: "#/parameters/ocr"
+        - $ref: "#/parameters/refnr"
+        - $ref: "#/parameters/ccpart"
+        - $ref: "#/parameters/ccyy"
+        - $ref: "#/parameters/ccmm"
+        - $ref: "#/parameters/cctype"
+        - $ref: "#/parameters/shopid"
+        - $ref: "#/parameters/recurring"
+      
+      responses:
+        '200':
+          description: 'OK'
+          schema: # response schema can be specified for each response
+            $ref: '#/definitions/ReturnParameters'
+          
+        '500':
+          description: Internal server error
+          
+  '/registerDonor':
+    post:
+      tags:
+        - Register Donor
+      summary: Send order for a giftcard
+      description: Place purchase order with the parameters `sid` and `la`. `pk`(productCode) = GKW
+      operationId: registerDonor
+      parameters:
+        - $ref: "#/parameters/sid"
+        - $ref: "#/parameters/la"
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a CONFIRM request
+          required: true
+          type: string
+          enum:
+            - 'ORDER'
+            - ''
+          default: ''
+        - name: pk
+          in: query
+          description: Productcode - must be 'GKW'
+          required: true
+          type: string
+          enum:
+            - 'GKW'
+        - $ref: "#/parameters/rc"
+        - $ref: "#/parameters/pr"
+        - $ref: "#/parameters/return"
+        - $ref: "#/parameters/pix"
+        - $ref: "#/parameters/sc"
+        - $ref: "#/parameters/onlinepay"
+        - $ref: "#/parameters/media"
+        - $ref: "#/parameters/activity"
+        - $ref: "#/parameters/device"
+        - $ref: "#/parameters/cnr"
+        - $ref: "#/parameters/fn"
+        - $ref: "#/parameters/ln"
+        - $ref: "#/parameters/en"
+        - $ref: "#/parameters/ad"
+        - $ref: "#/parameters/pc"
+        - $ref: "#/parameters/email"
+        - $ref: "#/parameters/phone"
+        - $ref: "#/parameters/mobile"
+        - $ref: "#/parameters/gcval"
+        - $ref: "#/parameters/gcpk"
+      
+      responses:
+        '200':
+          description: 'OK'
+          schema: # response schema can be specified for each response
+            $ref: '#/definitions/ReturnParameters'
+          
+        '500':
+          description: Internal server error
+
+  '/registerDonorPayment':
+    post:
+      tags:
+        - Register Donor Payment
+      summary: Register and confirm donor payment
+      description: Confirms that payment have been received
+      operationId: confirm donor payment
+      parameters:
+        - $ref: "#/parameters/sid"
+        - $ref: "#/parameters/la"
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a CONFIRM request
+          required: true
+          type: string
+          enum:
+            - 'CONFIRM'
+        - name: ocr
+          in: query
+          description: Returned from order (this is our order reference, and should also be passed to Dibs)
+          required: true
+          type: string
+        - $ref: "#/parameters/refnr"
+        - $ref: "#/parameters/ccpart"
+        - $ref: "#/parameters/ccyy"
+        - $ref: "#/parameters/ccmm"
+        - $ref: "#/parameters/cctype"
+        - $ref: "#/parameters/shopid"
+        - $ref: "#/parameters/gc"
+        - $ref: "#/parameters/gclink"
+      
+      responses:
+        '200':
+          description: 'OK'
+          schema: # response schema can be specified for each response
+            $ref: '#/definitions/ReturnParameters'
+          
+        '500':
+          description: Internal server error
+          
+  '/redeemGiftCode':
+    post:
+      tags:
+        - Redeem Gift Code
+      summary: Post info about receiver of giftcard
+      description: Register receiver parameters when giftcard is redeemed
+      operationId: registerReceiver
+      parameters:
+        - $ref: "#/parameters/sid"
+        - $ref: "#/parameters/la"
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a REDEEM request
+          required: true
+          type: string
+          enum:
+            - 'REDEEM'
+        - name: pk
+          in: query
+          description: Productcode - must be 'GKW'
+          required: true
+          type: string
+          enum:
+            - 'GKW'
+        - $ref: "#/parameters/rc"
+        - $ref: "#/parameters/pr"
+        - $ref: "#/parameters/return"
+        - $ref: "#/parameters/pix"
+        - $ref: "#/parameters/sc"
+        - $ref: "#/parameters/media"
+        - $ref: "#/parameters/activity"
+        - $ref: "#/parameters/device"
+        - $ref: "#/parameters/cnr"
+        - $ref: "#/parameters/fn"
+        - $ref: "#/parameters/ln"
+        - $ref: "#/parameters/en"
+        - $ref: "#/parameters/ad"
+        - $ref: "#/parameters/pc"
+        - $ref: "#/parameters/email"
+        - $ref: "#/parameters/phone"
+        - $ref: "#/parameters/mobile"
+        - $ref: "#/parameters/gc"
+        - $ref: "#/parameters/gcval"
+      
+      responses:
+        '200':
+          description: 'OK'
+          schema: # response schema can be specified for each response
+            $ref: '#/definitions/ReturnParameters'
+          
+        '500':
+          description: Internal server error
+  
+  '/getGiftcardStatus':
+    post:
+      tags:
+        - Get Giftcard Status
+      summary: Get status of giftcard
+      description: Returns status and value of gift card when this is redeemed
+      operationId: getGiftcard  Status
+      parameters:
+        - $ref: "#/parameters/sid"
+        - $ref: "#/parameters/la"
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a REDEEM request
+          required: true
+          type: string
+          enum:
+            - 'REDEEM'
+        - name: pk
+          in: query
+          description: Productcode - must be 'GKW'
+          required: true
+          type: string
+          enum:
+            - 'GKW'
+        - $ref: "#/parameters/gc"
+      
+      responses:
+        '200':
+          description: 'OK'
+          schema: # response schema can be specified for each response
+            $ref: '#/definitions/ReturnGiftCodeStatusParameters'
+          
+        '500':
+          description: Internal server error
+          
 # An object to hold data types that can be consumed and produced by operations.
 # These data types can be primitives, arrays or models.
 definitions:
-  Campaign:
+  RejectReason1:
+    description: 'order rejected due to Bonnier policy'
+    type: string
+    example: 1
+  RejectReason2:
+    description: 'order rejected because order is duplicate of existing order'
+    type: string
+    example: 2
+  RejectReason3:
+    description: 'order rejected because of parameter validation error'
+    type: string
+    example: 3
+  RejectReason4:
+    description: 'order rejected because of other error / exeption'
+    type: string
+    example: 4
+  RejectReason5:
+    description: 'order rejected because of invalid country'
+    type: string
+    example: 5
+  RejectReason6:
+    description: 'order rejected because of invalid postal number'
+    type: string
+    example: 6
+  RejectReason7:
+    description: 'order rejected because of invalid serviceID'
+    type: string
+    example: 7
+  RejectReason8:
+    description: 'order rejected because of invalid customer nr'
+    type: string
+    example: 8
+  RejectReason9:
+    description: 'lead rejected because of invalid sourcecode'
+    type: string
+    example: 9
+  RejectReason10:
+    description: 'rejected by PDB (check log in PDB)'
+    type: string
+    example: 10
+  RejectReason11:
+    description: 'CONFIRM order failed'
+    type: string
+    example: 11
+  RejectReason12:
+    description: 'Subscription/customer not found'
+    type: string
+    example: 12
+  RejectReason13:
+    description: 'Subscription/customer is inactive'
+    type: string
+    example: 13
+  RejectReason20:
+    description: 'Giftcard Order failed'
+    type: string
+    example: 20
+  RejectReason99:
+    description: 'wrong request, no parameters received'
+    type: string
+    example: 99
+  RejectReason100:
+    description: 'order confirmed but ignored'
+    type: string
+    example: 100
+  RejectReasons:
+    description: Error message
+    type: string
+    enum: [$ref: '#/definitions/RejectReason1', $ref: '#/definitions/RejectReason2', $ref: '#/definitions/RejectReason3',$ref: '#/definitions/RejectReason4', $ref: '#/definitions/RejectReason5', $ref: '#/definitions/RejectReason6', $ref: '#/definitions/RejectReason7', $ref: '#/definitions/RejectReason8', $ref: '#/definitions/RejectReason9', $ref: '#/definitions/RejectReason10', $ref: '#/definitions/RejectReason11', $ref: '#/definitions/RejectReason12', $ref: '#/definitions/RejectReason13', $ref: '#/definitions/RejectReason20', $ref: '#/definitions/RejectReason99', $ref: '#/definitions/RejectReason100']
+    
+  ReturnParameters: # define reusable parameters:
     type: object
     properties:
-      CampaignID:
-        description: Key value for campaign
+      result:
+        description: should be 0 if request was succesful, -1 if failed
         type: integer
-        minLength: 6
-        example: 324801
-      Title:
-        description: Campaign title
+        example: 0
+      ocr:
+        description: order reference number that can be used for online payment
         type: string
-        example: 3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder
-      ValidFrom:
-        description: Campaign valid from
+        minLength: 20
+        example: '20211532200005163471'
+      data:
+        description: custom data. This field can contain anything, e.g. giftcode when productCode= "GKW". Is blank if TYPE is blank (=Order)
         type: string
-        format: date
-        example: "2016-12-20T00:00:00"
-      ValidTo:
-        description: Campaign valid from
+        example: '8419131589'
+      reason:
+        $ref: '#/definitions/RejectReasons'
+        
+  ReturnGiftCodeStatusParameters: # define reusable parameters:
+    type: object
+    properties:
+      giftCode:
+        description: gift code (same as input)
         type: string
-        format: date
-        example: "2016-12-20T00:00:00"
-      Locale:
-        description: Customer market
+        example: "8625186989"
+      productCode:
+        description: locked to product (blank or GKW = any product)
         type: string
-        example: "sv-SE"
-      Language:
-        description: Campaign language
-        type: string
-        example: sv
-      Currency:
-        description: Currency of campaign
-        type: string
-        example: SEK
-      ShowInSweedish:
-        description: Relevant for Swedish customers in Finland
+        example: 'ILL'
+      isValid:
+        description: true/false
         type: boolean
         example: false
-      Offers:
-        description: Campaign offers
-        type: array
-        items: 
-          $ref: '#/definitions/Offers'
-      Medias:
-          description: Which media displays the campaign
-          type: array
-          items: 
-            $ref: '#/definitions/Medias'
-  Offers:
-    type: array
-    items:
-      properties:
-        ResponseCode:
-          description: A k a CouponCode. A value that uniquely defines the offer
-          type: integer
-          example: 65234309
-        Name:
-          description: A brief description of the offer. For internal use.
-          type: string
-          example: "3 nr 99,90kr + 39,50kr"
-        ProductCode:
-          description: A 3 letter abreviation for the products (magazines)
-          type: string
-          example: ATR
-        Issues:
-          description: Number of issues in offer
-          type: integer
-          example: 3
-        OfferText:
-          description: Text to present the offer, price, premium and conditions
-          type: string
-          example: "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li>
-            <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>
-            <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>
-            <li>Aktiv Träning utkommer 12 gånger om året.</li></ul>"
-        AcceptText:
-          description: Text to repeat the offer and conditions. Is shown to the customer right before checkout
-          type: string
-          example: "<ul> <li>3 nr av Aktiv Träning + premie för 99,90 kr + 39,50 kr. i porto och exp. Totalt 139,40 kr.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nr)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li/> </ul>"
-        NextPeriodText:
-          description: Description of the subscription terms
-          type: string
-          example: "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
-        InvoiceFeeText:
-          description: The price as a text for the shop
-          type: string
-          example: "(+ 10 kr)"
-        IntroPrice: 
-          description: The offer price for the issues of the magazine without a premium
-          type: string
-          example: "99,90"
-        IntroFee:
-          description: Administration fee / postage fee
-          type: string
-          example: "39,50"
-        InvoiceFee: 
-          description: The price for sending a printed invoice
-          type: string 
-          example: "10,00"
-        ListPrice: 
-          description: The price for one issue
-          type: string
-          example: "72.90"
-        TotalPrice:
-          description: Total price to be payed
-          type: string
-          example: "139,40"
-        DibsRecurring:
-          description: True if ConditionType = Subscription
-          type: boolean
-          example: true
-        ConditionType:
-          description: Subscription or otherwise
-          type: string
-          example: "Subscription"
-        Premiums:
-          description: The premiums that can be chosen with this offer.
-          type: array
-          items:
-            $ref: '#/definitions/Premiums'
-  Medias:
-    type: array
-    items:
-      properties:
-        Name:
-          description: Place of campaign occurrence in media
-          type: string
-          example: AboHeader
-        PaymentTypes:
-          type: array
-          items: 
-            $ref: '#/definitions/PaymentTypes'
-  PaymentTypes:
-    type: array
-    items:
-      properties:
-        Name:
-          description: Payment method
-          type: string
-          example: Web
-  Premiums:
-    type: array
-    items:
-      properties:
-        ArticleName: 
-          description: Name of premium
-          type: string
-          example: "Craft Baselayer Sort M"
-        ArticleNumber:
-          description: Article number
-          type: string
-          example: "911442"
-        ArticleValue: 
-          description: Value of this article
-          type: number
-          format: float
-          example: 450.00
+      validUntil:
+        description: date when giftcard expires
+        type: string
+        format: date-time
+        example: "2016-12-09T00:00:00"
+      giftValue:
+        description: the value of the gift
+        type: number
+        format: money
+        example: 199.00
+      status:
+        description: status code
+        type: string
+        example: "S"
+
+# reusable parameters:
+parameters:
+   sid:
+      name: sid
+      in: query
+      description: ServiceID - e.g. 'BP_NMS_DK'
+      required: true
+      type: string
+   la:
+      name: la
+      in: query
+      description: Country e.g. 'DK'
+      required: true
+      type: string
+   pk:
+      name: pk
+      in: query
+      description: Productcode - e.g. 'ILL'
+      required: true
+      type: string
+   rc:
+      name: rc
+      in: query
+      description: Responsecode - e.g. 64800929
+      required: true
+      type: integer
+      minLength: 8
+      maxLength: 8
+   pr:
+      name: pr
+      in: query
+      description: Premiumcode - e.g. 912115
+      type: integer
+   return:
+      name: return
+      in: query
+      description: URL of provider-specific confirmation page (BP Only)
+      type: string
+   pix:
+      name: pix
+      in: query
+      description: Tracking pixel. Typically this will be an img tag with a http src and a size of one pixel
+      type: string
+   sc:
+      name: sc
+      in: query
+      description: Sourcecode. Indicates what kind of permissions Bonnier stores on email and phone number. Newsletter, TM etc. E.g. 298244
+      required: true
+      type: integer
+      minLength: 6
+      maxLength: 6
+   onlinepay:
+      name: onlinepay
+      in: query
+      description: 0 or blank = GIRO/Unknown, 1 = online creditcard payment
+      type: integer
+   media:
+      name: media
+      in: query
+      description: media channel from which this order was made
+      type: string
+   activity:
+      name: activity
+      in: query
+      description: used for statistic purposes
+      type: string
+   device:
+      name: device
+      in: query
+      description: ex 'MOBILE', 'TABLET', 'DESKTOP'. Could also be device-id
+      type: string
+   ocr:
+      name: ocr
+      in: query
+      description: Used to confirm online payment (refnr is required)
+      type: string
+   refnr:
+      name: refnr
+      in: query
+      description: payment reference nr (Dibs Refnr)
+      type: string
+   ccpart:
+      name: ccpart
+      in: query
+      description: Last 4 digits in creditcard. e.g. **** **** **** 9999
+      type: string
+   ccyy:
+      name: ccyy
+      in: query
+      description: Creditcard exp year
+      type: string
+      minLength: 2
+      maxLength: 2
+   ccmm:
+      name: ccmm
+      in: query
+      description: Creditcard exp month
+      type: string
+      minLength: 2
+      maxLength: 2
+   cctype:
+      name: cctype
+      in: query
+      description: Creditcard type (VISA, MC etc)
+      type: string
+   shopid:
+      name: shopid
+      in: query
+      description: Dibs shop ID. E.g. 5305
+      type: string
+      minLength: 4
+      maxLength: 4
+   recurring:
+      name: recurring
+      in: query
+      description: 1 = activate recurring if refnr is available
+      type: integer
+   cnr:
+      name: cnr
+      in: query
+      description: CustomerNr / SubscriptionNr
+      type: string
+   fn:
+      name: fn
+      in: query
+      description: Customer firstname
+      required: true
+      type: string
+   ln:
+      name: ln
+      in: query
+      description: Customer lastname
+      required: true
+      type: string
+   en:
+      name: en
+      in: query
+      description: Customer Extra name C/O
+      type: string
+   ad:
+      name: ad
+      in: query
+      description: Customer address + street nr.
+      required: true
+      type: string
+   pc:
+      name: pc
+      in: query
+      description: Customer postal code
+      required: true
+      type: string
+   email:
+      name: email
+      in: query
+      description: Customer email
+      required: true
+      type: string
+      format: email
+   phone:
+      name: phone
+      in: query
+      description: Customer phone
+      type: string
+   mobile:
+      name: mobile
+      in: query
+      description: Customer mobile
+      type: string
+   op:
+      name: op
+      in: query
+      description: Indicates a gift order (gave / gåvo abon). When true, receiver name fields below must exist
+      type: boolean
+   fn2:
+      name: fn2
+      in: query
+      description: Firstname of person who receives magazine when op=true
+      type: string
+   ln2:
+      name: ln2
+      in: query
+      description: Lastname of person who receives magazine when op=true
+      type: string
+   en2:
+      name: en2
+      in: query
+      description: Extraname C/O of person who receives magazine when op=true
+      type: string
+   ad2:
+      name: ad2
+      in: query
+      description: Address + streetnr of person who receives magazine when op=true
+      type: string
+   pc2:
+      name: pc2
+      in: query
+      description: Postal code of person who receives magazine when op=true
+      type: string
+   gcval:
+      name: gcval
+      in: query
+      description: Giftcode value in minor units (value*100). Ex. 1 SEK = 100
+      type: integer
+   gcpk:
+      name: gcpk
+      in: query
+      description: Giftcode product. Used if giftcode should be locked to a specific product
+      type: string
+   gclink:
+      name: gclink
+      in: query
+      description: Link (url) to printable Giftcode. This link is included in email to customer. Could be link to a PDF or similar
+      type: string
+   gc:
+      name: gc
+      in: query
+      description: Giftcode
+      type: string
