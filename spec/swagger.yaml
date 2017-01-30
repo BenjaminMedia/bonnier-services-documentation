@@ -10,6 +10,9 @@ info:
     # Introduction
     This document describes how to submit orders to Bonnier Magazine Data (BMD) from various campaign activities. Orders 3 validates parameters, queues the order in backend system, and replies in XML or JSON format
     
+    # Security
+    ip protection
+    
     # Test Data
     For testing parameter validation, connection, character sets and similar you can use postal code 0000 (in DK and NO) or 00000 (in SE and FI) when submitting data
     
@@ -35,20 +38,9 @@ info:
   x-logo:
     url: 'http://www.bonnier.com/Global/Images/Bonnier_logotype.png'
 produces:
-  # List of mime types your API endpoins can return.
-  # This is a global default. You can OVERWRITE it in each specific operation.
-  # Remove the ones not used in your API
   - application/json
-  # you can add any mime type your API produces to the list
 consumes:
-  # List of mime types your API endpoins consumes.
-  # This is a global default. You can OVERWRITE it in each specific operation.
-  # Remove the ones not supported by your API
   - application/json
-  # you can add any mime type your API consumes to the list
-
-# A list of tags used by the specification with additional metadata.
-# The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
   - name: Order
     description: Submit order operations
@@ -57,18 +49,15 @@ tags:
   - name: Register Donor
     description: Submit giftcard order operations
   - name: Register Donor Payment
-    description: Confirm giftcard order payment operations
+    description: Confirm giftcard order payment operations. 
   - name: Redeem Gift Code
-    description: Submit information about receiver of gift card when this is redeemed
+    description: Submit information about receiver of gift card when this is redeemed.
   - name: Get Giftcode Status
     description: Returns status and value of giftcard
-# Security scheme definitions that can be used across the specification.
 
 
-# Holds the relative paths to the individual endpoints. The path is appended to the
-# basePath in order to construct the full URL. 
 paths:
-  '/order': # path parameter in curly braces
+  '/?type=ORDER': # path parameter in curly braces
     # documentation for GET operation for this path
     post:
       tags:
@@ -80,11 +69,8 @@ paths:
         
         Place purchase order 
         
-        Secutity - ip protection
-        
-      operationId: placeOrder
+      operationId: submitOrder
       
-      # list of parameters for the operation
       parameters:
         - $ref: "#/parameters/sid"
         - $ref: "#/parameters/la"
@@ -133,7 +119,7 @@ paths:
         '500':
           description: Internal server error
   
-  '/confirm':
+  '/?type=CONFIRM':
     post:
       tags:
         - Confirm
@@ -162,13 +148,13 @@ paths:
       responses:
         '200':
           description: 'OK'
-          schema: # response schema can be specified for each response
+          schema: 
             $ref: '#/definitions/ReturnParametersCONFIRM'
           
         '500':
           description: Internal server error
           
-  '/registerDonor':
+  '/?type=ORDER&pk=GKW':
     post:
       tags:
         - Register Donor
@@ -224,12 +210,12 @@ paths:
         '500':
           description: Internal server error
 
-  '/registerDonorPayment':
+  '/?type=CONFIRM&gc=':
     post:
       tags:
         - Register Donor Payment
       summary: Register and confirm donor payment
-      description: Confirms that payment have been received
+      description: Confirms that payment have been received. This activates the giftcode, and should only be called after a succesful payment.
       operationId: confirm donor payment
       parameters:
         - $ref: "#/parameters/sid"
@@ -260,7 +246,7 @@ paths:
         '500':
           description: Internal server error
           
-  '/redeemGiftCode':
+  '/?TYPE=REDEEM':
     post:
       tags:
         - Redeem Gift Code
@@ -313,7 +299,7 @@ paths:
         '500':
           description: Internal server error
   
-  '/getGiftcodeStatus':
+  '/type=STATUS':
     post:
       tags:
         - Get Giftcode Status
@@ -617,7 +603,7 @@ parameters:
    shopid:
       name: shopid
       in: query
-      description: Dibs shop ID. E.g. 5305
+      description: Dibs shop ID. E.g. 5305 for BP, 3547 = BT
       required: true
       type: string
       minLength: 4
