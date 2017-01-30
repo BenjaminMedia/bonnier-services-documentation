@@ -402,9 +402,9 @@ definitions:
     type: string
     example: 100
   RejectReasons:
-    description: Error message
+    description: blank if result = 0, Error message if result = -1
     type: string
-    enum: [$ref: '#/definitions/RejectReason1', $ref: '#/definitions/RejectReason2', $ref: '#/definitions/RejectReason3',$ref: '#/definitions/RejectReason4', $ref: '#/definitions/RejectReason5', $ref: '#/definitions/RejectReason6', $ref: '#/definitions/RejectReason7', $ref: '#/definitions/RejectReason8', $ref: '#/definitions/RejectReason9', $ref: '#/definitions/RejectReason10', $ref: '#/definitions/RejectReason11', $ref: '#/definitions/RejectReason12', $ref: '#/definitions/RejectReason13', $ref: '#/definitions/RejectReason20', $ref: '#/definitions/RejectReason99', $ref: '#/definitions/RejectReason100']
+    enum: ['', $ref: '#/definitions/RejectReason1', $ref: '#/definitions/RejectReason2', $ref: '#/definitions/RejectReason3',$ref: '#/definitions/RejectReason4', $ref: '#/definitions/RejectReason5', $ref: '#/definitions/RejectReason6', $ref: '#/definitions/RejectReason7', $ref: '#/definitions/RejectReason8', $ref: '#/definitions/RejectReason9', $ref: '#/definitions/RejectReason10', $ref: '#/definitions/RejectReason11', $ref: '#/definitions/RejectReason12', $ref: '#/definitions/RejectReason13', $ref: '#/definitions/RejectReason20', $ref: '#/definitions/RejectReason99', $ref: '#/definitions/RejectReason100']
     
   ReturnParameters: # define reusable parameters - Order and Redeem Gift Code:
     type: object
