@@ -3,7 +3,7 @@ swagger: '2.0'
 schemes:
   - https 
 host: order.bm-data.com 
-basePath: /order.bm-data.com 
+basePath: "/"
 info:
   
   description: |
@@ -60,7 +60,7 @@ tags:
     description: Confirm giftcard order payment operations
   - name: Redeem Gift Code
     description: Submit information about receiver of gift card when this is redeemed
-  - name: Get Giftcard Status
+  - name: Get Giftcode Status
     description: Returns status and value of giftcard
 # Security scheme definitions that can be used across the specification.
 
@@ -68,7 +68,7 @@ tags:
 # Holds the relative paths to the individual endpoints. The path is appended to the
 # basePath in order to construct the full URL. 
 paths:
-  '/order/': # path parameter in curly braces
+  '/order': # path parameter in curly braces
     # documentation for GET operation for this path
     post:
       tags:
@@ -78,7 +78,8 @@ paths:
       
       description: | 
         
-        Place purchase order with the parameters `sid` and `la`
+        Place purchase order 
+        
         Secutity - ip protection
         
       operationId: placeOrder
@@ -172,7 +173,7 @@ paths:
       tags:
         - Register Donor
       summary: Send order for a giftcard
-      description: Place purchase order with the parameters `sid` and `la`. `pk`(productCode) = GKW
+      description: Place purchase order with `pk`(productCode) = GKW
       operationId: registerDonor
       parameters:
         - $ref: "#/parameters/sid"
@@ -218,7 +219,7 @@ paths:
         '200':
           description: 'OK'
           schema: # response schema can be specified for each response
-            $ref: '#/definitions/ReturnParametersGiftCard'
+            $ref: '#/definitions/ReturnParametersGiftCode'
           
         '500':
           description: Internal server error
@@ -307,15 +308,15 @@ paths:
         '200':
           description: 'OK'
           schema: # response schema can be specified for each response
-            $ref: '#/definitions/ReturnGiftCodeStatusParameters'
+            $ref: '#/definitions/ReturnParameters'
           
         '500':
           description: Internal server error
   
-  '/getGiftcardStatus':
+  '/getGiftcodeStatus':
     post:
       tags:
-        - Get Giftcard Status
+        - Get Giftcode Status
       summary: Get status of giftcard
       description: Returns status and value of gift card when this is redeemed
       operationId: getGiftcard  Status
@@ -342,7 +343,7 @@ paths:
         '200':
           description: 'OK'
           schema: # response schema can be specified for each response
-            $ref: '#/definitions/ReturnParameters'
+            $ref: '#/definitions/ReturnGiftCodeStatusParameters'
           
         '500':
           description: Internal server error
@@ -419,7 +420,7 @@ definitions:
     type: string
     enum: [$ref: '#/definitions/RejectReason1', $ref: '#/definitions/RejectReason2', $ref: '#/definitions/RejectReason3',$ref: '#/definitions/RejectReason4', $ref: '#/definitions/RejectReason5', $ref: '#/definitions/RejectReason6', $ref: '#/definitions/RejectReason7', $ref: '#/definitions/RejectReason8', $ref: '#/definitions/RejectReason9', $ref: '#/definitions/RejectReason10', $ref: '#/definitions/RejectReason11', $ref: '#/definitions/RejectReason12', $ref: '#/definitions/RejectReason13', $ref: '#/definitions/RejectReason20', $ref: '#/definitions/RejectReason99', $ref: '#/definitions/RejectReason100']
     
-  ReturnParameters: # define reusable parameters:
+  ReturnParameters: # define reusable parameters - Order and Redeem Gift Code:
     type: object
     properties:
       result:
@@ -438,7 +439,7 @@ definitions:
       reason:
         $ref: '#/definitions/RejectReasons'
         
-  ReturnParametersGiftCard: # define reusable parameters:
+  ReturnParametersGiftCode: # define reusable parameters - Register Donor:
     type: object
     properties:
       result:
@@ -451,13 +452,13 @@ definitions:
         minLength: 20
         example: '20211532200005163471'
       data:
-        description: custom data. Contains gift code when productCode= "GKW".
+        description: custom data. Contains gift code when productCode= "GKW". This will also be sent on email.
         type: string
         example: '8419131589'
       reason:
         $ref: '#/definitions/RejectReasons'
         
-  ReturnParametersCONFIRM: # define reusable parameters:
+  ReturnParametersCONFIRM: # define reusable parameters - Confirm and Register Donor Payment:
     type: object
     properties:
       result:
@@ -476,7 +477,7 @@ definitions:
       reason:
         $ref: '#/definitions/RejectReasons'
         
-  ReturnGiftCodeStatusParameters: # define reusable parameters:
+  ReturnGiftCodeStatusParameters: # define reusable parameters - Get Giftcode Status:
     type: object
     properties:
       giftCode:
