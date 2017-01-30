@@ -1,4 +1,4 @@
-# IndexSearch OpenAPI Specification
+# Orders3 API Specification
 [![Build Status](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation.svg?branch=master)](https://travis-ci.org/BenjaminMedia/bonnier-services-documentation)
 
 ## Steps to finish
