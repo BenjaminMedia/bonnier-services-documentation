@@ -8,11 +8,28 @@ info:
   
   description: |
     # Introduction
-    This document describes how to submit orders to Bonnier Magazine Data (BMD) from various campaign activities. Orders 3 validates parameters, queues the order in backend system, and replies in XML or JSON format. When a request is succesful, the response parameter "Result" will be 0, and the parameter "Reason" will be blank. If the request fails, the page will return -1+"ReasonCode" (e.g. -112)
-    
+    This document describes how to submit orders to Bonnier Magazine Data (BMD) from various campaign activities. Orders 3 validates parameters, queues the order in backend system, and replies in XML or JSON format. 
     # Security
     ip protection
-    
+    # Reject Reasons
+    When a request is succesful, the response parameter "Result" will be 0, and the parameter "Reason" will be blank. If the request fails, the page will return -1+"reject reason" (e.g. -112). The reject reason numbers have the below listed translations
+      - **1** order rejected due to Bonnier policy
+      - **2** order rejected because order is duplicate of existing order
+      - **3** order rejected because of parameter validation error
+      - **4** order rejected because of other error / exeption
+      - **5** order rejected because of invalid country
+      - **6** order rejected because of invalid postal number
+      - **7** order rejected because of invalid serviceID
+      - **8** order rejected because of invalid customer nr
+      - **9** lead rejected because of invalid sourcecode
+      - **10** rejected by PDB (check log in PDB)
+      - **11** CONFIRM order failed
+      - **12** Subscription/customer not found
+      - **13** Subscription/customer is inactive
+      - **20** Giftcard Order failed
+      - **99** wrong request, no parameters received
+      - **100** order confirmed but ignored
+      
     # Test Data
     For testing parameter validation, connection, character sets and similar you can use postal code 0000 (in DK and NO) or 00000 (in SE and FI) when submitting data
     
@@ -329,87 +346,17 @@ paths:
           description: 'OK'
           schema: # response schema can be specified for each response
             $ref: '#/definitions/ReturnGiftCodeStatusParameters'
-          
+        
         '500':
           description: Internal server error
           
 # An object to hold data types that can be consumed and produced by operations.
 # These data types can be primitives, arrays or models.
 definitions:
-  RejectReason1:
-    description: 'order rejected due to Bonnier policy'
-    type: string
-    example: 1
-  RejectReason2:
-    description: 'order rejected because order is duplicate of existing order'
-    type: string
-    example: 2
-  RejectReason3:
-    description: 'order rejected because of parameter validation error'
-    type: string
-    example: 3
-  RejectReason4:
-    description: 'order rejected because of other error / exeption'
-    type: string
-    example: 4
-  RejectReason5:
-    description: 'order rejected because of invalid country'
-    type: string
-    example: 5
-  RejectReason6:
-    description: 'order rejected because of invalid postal number'
-    type: string
-    example: 6
-  RejectReason7:
-    description: 'order rejected because of invalid serviceID'
-    type: string
-    example: 7
-  RejectReason8:
-    description: 'order rejected because of invalid customer nr'
-    type: string
-    example: 8
-  RejectReason9:
-    description: 'lead rejected because of invalid sourcecode'
-    type: string
-    example: 9
-  RejectReason10:
-    description: 'rejected by PDB (check log in PDB)'
-    type: string
-    example: 10
-  RejectReason11:
-    description: 'CONFIRM order failed'
-    type: string
-    example: 11
-  RejectReason12:
-    description: 'Subscription/customer not found'
-    type: string
-    example: 12
-  RejectReason13:
-    description: 'Subscription/customer is inactive'
-    type: string
-    example: 13
-  RejectReason20:
-    description: 'Giftcard Order failed'
-    type: string
-    example: 20
-  RejectReason99:
-    description: 'wrong request, no parameters received'
-    type: string
-    example: 99
-  RejectReason100:
-    description: 'order confirmed but ignored'
-    type: string
-    example: 100
   RejectReasons:
     description: blank if result = 0, Error message if result = -1
     type: string
-    enum: 
-      - '' 
-      - $ref: '#/definitions/RejectReason1'
-      - $ref: '#/definitions/RejectReason2'
-      - $ref: '#/definitions/RejectReason3'
-      - $ref: '#/definitions/RejectReason4'
-      - $ref: '#/definitions/RejectReason5'
+    	enum: ['', '1', '2', '3','4', '5', '6', '7', '8', '9', '10', '11','12', '13', '20', '99', '100']	
     
   ReturnParameters: # define reusable parameters - Order and Redeem Gift Code:
     type: object
