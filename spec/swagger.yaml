@@ -85,18 +85,19 @@ paths:
         
         This operation creates an order transaction. The payment is still not confirmed at this stage. For testing, the following example data have been used:
         
-        - Name: Lars Jensen
-        - Address: Ægirsgade 127
-        - Postcode: 8888
-        - Coountry: Denmark
-        - Email: larstest@mail.dk
-        - Product code: BOB
-        - Coupon code: 09041865
-        - Prize code: 009350
-        - Sourcecode: 123456
-        - ServiceID: BP_NMS_DK
-        - Format: JSON
-        - onlinepay: 1
+        - "sid": "BP_NMS_DK"
+        - "la": "DK"
+        - "fn": "Lars"
+        - "ln": "Jensen"
+        - "ad": "Ægirsgade 127"
+        - "pc": 8888
+        - "email": "larstest@mail.dk"
+        - "pk": "BOB"
+        - "rc": 09041865
+        - "pr": 009350
+        - "sc": 123456
+        - "format": "JSON"
+        - "onlinepay": 1
         
         With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON&onlinepay=1'
         
@@ -161,14 +162,14 @@ paths:
       description: | 
           This operation creates a 'payment on the way' notification on the subscription. This should only be used after a successful payment. For testing, the following example data have been used:
           
-          - ServiceID: BP_NMS_DK
-          - Coountry: Denmark
-          - Type: CONFIRM
-          - Ocr: 24026411300016170321
-          - Refnr: 123456789
-          - ShopId: 5305
-          - Recurring: 1
-          - Format: JSON
+          - "sid": "BP_NMS_DK"
+          - "la": "DK"
+          - "type": "CONFIRM"
+          - "ocr": 24026411300016170321
+          - "refnr": 123456789
+          - "shopid": 5305
+          - "recurring": 1
+          - "format": "JSON"
           
           With these parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=24026411300016170321&refnr=123456789&shopId=5305&recurring=1&format=JSON'
           
@@ -211,20 +212,20 @@ paths:
       description: |
         This operation creates an order transaction for a giftcard. The donor parameters are registered, and a giftcode is created. This giftcode will also be sent on email. Note that the order must be registered with `pk`(productCode) = GKW. If the giftcard is for an optional magazine, the value `gc` is blank. For testing, the following example data have been used:
         
-        - ServiceID: PB_NMS_DK
-        - Country: Denmark
-        - Name: Lars Madsen
-        - Address: Ægirsgade 128
-        - Postcode: 8888
-        - Coountry: Denmark
-        - Email: larsmtest@mail.dk
-        - Product code: GKW
-        - Coupon code: 09041865
-        - Sourcecode: 110303
-        - Format: JSON
-        - onlinepay: 1
-        - Giftcode value: 19900
-        - Giftcode product: ILL
+        - "sid": "PB_NMS_DK"
+        - "la": "DK"
+        - "fn": "Lars" 
+        - "ln": "Madsen"
+        - "ad": "Ægirsgade 128"
+        - "pc": 8888
+        - "email": "larsmtest@mail.dk"
+        - "pk": "GKW"
+        - "rc": 09041865
+        - "sc": 110303
+        - "format": "JSON"
+        - "onlinepay": 1
+        - "gcval": 19900
+        - "gcpk": "ILL"
         
         With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=GKW&kk=09041865&pr=009350&sc=110303&fn=Lars&ln=Madsen&ad=%C3%86girsgade+128&pc=8888&email=larsmtest@mail.dk&sid=BP_NMS_DK&format=JSON&onlinepay=1&gcval=19900&gcpk=ILL' 
           
@@ -289,13 +290,13 @@ paths:
       description: |
         This operation creates a 'payment on the way' notification on the subscription. It also activates the giftcode, and should only be called after a succesful payment. For testing, the following example data have been used:
         
-        - ServiceID: PB_NMS_DK
-        - Country: Denmark
-        - Type: CONFIRM
-        - Giftcode: 8354058789
-        - Ocr: 28354058700089170321
-        - Giftcode link: 'http%3A%2F%2Fshop.mmm.dk%2Fpdf%2Fq6imrzJx6HMdZV5uFzWKTJ%25252BXArgqM7Tn3i406BL12v8%2525C2%2525A7%2FGavekort.pdf' 
-        - Refnr: 123456789
+        - "sid": "PB_NMS_DK"
+        - "la": "DK"
+        - "type": "CONFIRM"
+        - "gc": 8354058789
+        - "ocr": 28354058700089170321
+        - "gclink": 'http%3A%2F%2Fshop.mmm.dk%2Fpdf%2Fq6imrzJx6HMdZV5uFzWKTJ%25252BXArgqM7Tn3i406BL12v8%2525C2%2525A7%2FGavekort.pdf'
+        - "refnr": 123456789
         
         With theese parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=28353656900089170331&refnr=123456789&shopId=5305&cg=8353656989&gclink=http%3A%2F%2Fbonniershop.dk%2Fpdf%2FejiG3fbUmugnce0%25252BarIMlIE3JDJb7ovzrAMDsJbHMo4%2525C2%2525A7%2FGavekort.pdf&format=JSON'
         
@@ -340,20 +341,23 @@ paths:
       description: |
         This operation validates the giftcode and registers receiver parameters when the giftcard is redeemed. For testing, the following example data have been used:
         
-        - ServiceID: PB_NMS_DK
-        - Country: Denmark
-        - Type: REDEEM
-        - Name: Hans Madsen
-        - Address: Ægirsgade 4
-        - Postcode: 8888
-        - Coountry: Denmark
-        - Email: hansmtest@mail.dk
-        - Product code: ILL
-        - Coupon code: 09041865
-        - Sourcecode: 110303
-        - Format: JSON
-        - Giftcode value: 19900
-        - Giftcode: 8354058789
+        {
+         - "sid": "PB_NMS_DK"
+         - "la": "DK"
+         - "type": "REDEEM"
+         - "fn": "Hans" 
+         - "ln": "Madsen"
+         - "ad": "Ægirsgade 4"
+         - "pc": 8888
+         - "email": "hansmtest@mail.dk"
+         - "pk": "ILL"
+         - "rc": 09041865
+         - "sc": 110303
+         - "format": "JSON"
+         - "gcval": 19900
+         - "gc": 8354058789
+         
+        }
         
         With theese parameters inserted into the url: 'http://order.bm-data.com/?la=DK&type=REDEEM&pk=ILL&kk=09041865&pr=009350&sc=110303&fn=Hans&ln=Madsen&ad=%C3%86girsgade+4&pc=8888&email=hansmtest@mail.dk&sid=BP_WS&format=JSON&onlinepay=1&gcval=19900&gc=8354058789'
         
@@ -415,11 +419,11 @@ paths:
       description: |
         This operation returns the status and value of a gift card when this is redeemed. For testing, the following example data have been used:
         
-        - ServiceID: PB_NMS_DK
-        - Country: Denmark
-        - Type: STATUS
-        - gc: 8353656989
-        - Format: JSON
+        - "sid": "PB_NMS_DK"
+        - "la": "DK"
+        - "type": "STATUS"
+        - "gc": 8353656989
+        - "gc": "JSON"
       
         With theese parameters inserted into the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=STATUS&gc=8353656989&format=JSON'
         
@@ -633,6 +637,7 @@ parameters:
       in: query
       description: ex 'MOBILE', 'TABLET', 'DESKTOP'. Could also be device-id
       type: string
+      enum: ['MOBILE', 'TABLET', 'DESKTOP']
    ocr:
       name: ocr
       in: query
