@@ -298,6 +298,7 @@ paths:
       summary: Register and confirm donor payment
       description: |
         This operation creates a 'payment on the way' notification on the subscription. It also activates the giftcode, and should only be called after a succesful payment. For testing, the following example data have been used:
+        
         {
         - "sid": "PB_NMS_DK"
         - "la": "DK"
@@ -430,11 +431,14 @@ paths:
       description: |
         This operation returns the status and value of a gift card when this is redeemed. For testing, the following example data have been used:
         
+        {
         - "sid": "PB_NMS_DK"
         - "la": "DK"
         - "type": "STATUS"
         - "gc": 8353656989
         - "gc": "JSON"
+        
+        }
       
         With theese parameters inserted into the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=STATUS&gc=8353656989&format=JSON'
         
