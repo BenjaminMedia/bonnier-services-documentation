@@ -60,13 +60,13 @@ consumes:
   - application/json
 tags:
   - name: Order
-    description: Submit order operations
+    description: Submit purchase order
   - name: Confirm
-    description: Confirm order payment operations
+    description: Confirm order payment
   - name: Register Donor
-    description: Submit giftcard order operations
+    description: Submit giftcard order
   - name: Register Donor Payment
-    description: Confirm giftcard order payment operations. 
+    description: Confirm giftcard order payment 
   - name: Redeem Gift Code
     description: Submit information about receiver of gift card when this is redeemed.
   - name: Get Giftcode Status
@@ -83,7 +83,24 @@ paths:
       
       description: | 
         
-        Place purchase order 
+        This operation creates an order transaction. The payment is still not confirmed at this stage. For testing, the following example data have been used:
+        
+        - Name: Lars Jensen
+        - Address: Ægirsgade 127
+        - Postcode: 8888
+        - Coountry: Denmark
+        - Email: larstest@mail.dk
+        - Product code: BOB
+        - Coupon code: 09041865
+        - Prize code: 009350
+        - Sourcecode: 123456
+        - ServiceID: BP_NMS_DK
+        - Format: JSON
+        - onlinepay: 1
+        
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON&onlinepay=1'
+        
+        This request returned the response: '{ "result": 0, "ocr": "24026411300016170321", "reason": "", "data": "" }'
         
       operationId: submitOrder
       
@@ -123,6 +140,7 @@ paths:
         - $ref: "#/parameters/en2"
         - $ref: "#/parameters/ad2"
         - $ref: "#/parameters/pc2"
+        - $ref: "#/parameters/format"
       
       produces:
         - application/json
@@ -140,7 +158,21 @@ paths:
       tags:
         - Confirm
       summary: Confirm order payment
-      description: Confirms that payment have been received and states if the payment is recurring
+      description: | 
+          This operation creates a 'payment on the way' notification on the subscription. This should only be used after a successful payment. For testing, the following example data have been used:
+          
+          - ServiceID: BP_NMS_DK
+          - Coountry: Denmark
+          - Type: CONFIRM
+          - Ocr: 24026411300016170321
+          - Refnr: 123456789
+          - ShopId: 5305
+          - Recurring: 1
+          - Format: JSON
+          
+          With these parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=24026411300016170321&refnr=123456789&shopId=5305&recurring=1&format=JSON'
+          
+          This request returned the response: '{ "result": 0, "ocr": "VerifyEasy_response:_OK", "reason": "", "data": "" }'
       operationId: confirm
       parameters:
         - $ref: "#/parameters/sid"
@@ -160,6 +192,7 @@ paths:
         - $ref: "#/parameters/cctype"
         - $ref: "#/parameters/shopid"
         - $ref: "#/parameters/recurring"
+        - $ref: "#/parameters/format"
       
       responses:
         '200':
@@ -174,8 +207,29 @@ paths:
     post:
       tags:
         - Register Donor
-      summary: Send order for a giftcard
-      description: Place purchase order with `pk`(productCode) = GKW
+      summary: Register a gift card donor
+      description: |
+        This operation creates an order transaction for a giftcard. The donor parameters are registered, and a giftcode is created. This giftcode will also be sent on email. Note that the order must be registered with `pk`(productCode) = GKW. If the giftcard is for an optional magazine, the value `gc` is blank. For testing, the following example data have been used:
+        
+        - ServiceID: PB_NMS_DK
+        - Country: Denmark
+        - Name: Lars Madsen
+        - Address: Ægirsgade 128
+        - Postcode: 8888
+        - Coountry: Denmark
+        - Email: larsmtest@mail.dk
+        - Product code: GKW
+        - Coupon code: 09041865
+        - Sourcecode: 110303
+        - Format: JSON
+        - onlinepay: 1
+        - Giftcode value: 19900
+        - Giftcode product: ILL
+        
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=GKW&kk=09041865&pr=009350&sc=110303&fn=Lars&ln=Madsen&ad=%C3%86girsgade+128&pc=8888&email=larsmtest@mail.dk&sid=BP_NMS_DK&format=JSON&onlinepay=1&gcval=19900&gcpk=ILL' 
+          
+        This request returned the response: '{ "result": 0, "ocr": "28354058700089170321", "reason": "", "data": "8354058789" }'
+        
       operationId: registerDonor
       parameters:
         - $ref: "#/parameters/sid"
@@ -216,6 +270,7 @@ paths:
         - $ref: "#/parameters/mobile"
         - $ref: "#/parameters/gcval"
         - $ref: "#/parameters/gcpk"
+        - $ref: "#/parameters/format"
       
       responses:
         '200':
@@ -231,7 +286,21 @@ paths:
       tags:
         - Register Donor Payment
       summary: Register and confirm donor payment
-      description: Confirms that payment have been received. This activates the giftcode, and should only be called after a succesful payment.
+      description: |
+        This operation creates a 'payment on the way' notification on the subscription. It also activates the giftcode, and should only be called after a succesful payment. For testing, the following example data have been used:
+        
+        - ServiceID: PB_NMS_DK
+        - Country: Denmark
+        - Type: CONFIRM
+        - Giftcode: 8354058789
+        - Ocr: 28354058700089170321
+        - Giftcode link: 'http%3A%2F%2Fshop.mmm.dk%2Fpdf%2Fq6imrzJx6HMdZV5uFzWKTJ%25252BXArgqM7Tn3i406BL12v8%2525C2%2525A7%2FGavekort.pdf' 
+        - Refnr: 123456789
+        
+        With theese parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=28353656900089170331&refnr=123456789&shopId=5305&cg=8353656989&gclink=http%3A%2F%2Fbonniershop.dk%2Fpdf%2FejiG3fbUmugnce0%25252BarIMlIE3JDJb7ovzrAMDsJbHMo4%2525C2%2525A7%2FGavekort.pdf&format=JSON'
+        
+        This request returned the response: '{ "result": 0, "ocr": "VerifyEasy_response:_OK", "reason": "", "data": "" }'
+      
       operationId: confirm donor payment
       parameters:
         - $ref: "#/parameters/sid"
@@ -252,6 +321,7 @@ paths:
         - $ref: "#/parameters/shopid"
         - $ref: "#/parameters/gc"
         - $ref: "#/parameters/gclink"
+        - $ref: "#/parameters/format"
       
       responses:
         '200':
@@ -267,7 +337,28 @@ paths:
       tags:
         - Redeem Gift Code
       summary: Post info about receiver of giftcard
-      description: Register receiver parameters when giftcard is redeemed
+      description: |
+        This operation validates the giftcode and registers receiver parameters when the giftcard is redeemed. For testing, the following example data have been used:
+        
+        - ServiceID: PB_NMS_DK
+        - Country: Denmark
+        - Type: REDEEM
+        - Name: Hans Madsen
+        - Address: Ægirsgade 4
+        - Postcode: 8888
+        - Coountry: Denmark
+        - Email: hansmtest@mail.dk
+        - Product code: ILL
+        - Coupon code: 09041865
+        - Sourcecode: 110303
+        - Format: JSON
+        - Giftcode value: 19900
+        - Giftcode: 8354058789
+        
+        With theese parameters inserted into the url: 'http://order.bm-data.com/?la=DK&type=REDEEM&pk=ILL&kk=09041865&pr=009350&sc=110303&fn=Hans&ln=Madsen&ad=%C3%86girsgade+4&pc=8888&email=hansmtest@mail.dk&sid=BP_WS&format=JSON&onlinepay=1&gcval=19900&gc=8354058789'
+        
+        This request returned the response: '{ "result": 0, "ocr": "", "reason": "", "data": "" }'
+        
       operationId: registerReceiver
       parameters:
         - $ref: "#/parameters/sid"
@@ -305,12 +396,13 @@ paths:
         - $ref: "#/parameters/mobile"
         - $ref: "#/parameters/gc"
         - $ref: "#/parameters/gcval"
+        - $ref: "#/parameters/format"
       
       responses:
         '200':
           description: 'OK'
           schema: # response schema can be specified for each response
-            $ref: '#/definitions/ReturnParameters'
+            $ref: '#/definitions/ReturnParametersRedeem'
           
         '500':
           description: Internal server error
@@ -320,26 +412,32 @@ paths:
       tags:
         - Get Giftcode Status
       summary: Get status of giftcard
-      description: Returns status and value of gift card when this is redeemed
+      description: |
+        This operation returns the status and value of a gift card when this is redeemed. For testing, the following example data have been used:
+        
+        - ServiceID: PB_NMS_DK
+        - Country: Denmark
+        - Type: STATUS
+        - gc: 8353656989
+        - Format: JSON
+      
+        With theese parameters inserted into the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=STATUS&gc=8353656989&format=JSON'
+        
+        This request returned the response: '{ "giftCode": "8353656989", "productCode": "ILL", "isValid": false, "validUntil": "2018-02-02T00:00:00", "giftValue": 199.00, "status": "R" }'
+      
       operationId: getGiftcard  Status
       parameters:
         - $ref: "#/parameters/sid"
         - $ref: "#/parameters/la"
         - name: type
           in: query
-          description: RequestType to indicate that this is a REDEEM request
+          description: RequestType to indicate that this is a STATUS request
           required: true
           type: string
           enum:
-            - 'REDEEM'
-        - name: pk
-          in: query
-          description: Productcode - must be 'GKW'
-          required: true
-          type: string
-          enum:
-            - 'GKW'
+            - 'STATUS'
         - $ref: "#/parameters/gc"
+        - $ref: "#/parameters/format"
       
       responses:
         '200':
@@ -392,7 +490,7 @@ definitions:
       data:
         description: custom data. Contains gift code when productCode= "GKW". This will also be sent on email.
         type: string
-        example: '8419131589'
+        example: '8353656989'
       reason:
         $ref: '#/definitions/RejectReasons'
         
@@ -404,12 +502,30 @@ definitions:
         type: integer
         example: 0
       ocr:
-        description: Blank when TYPE = 'CONFIRM'
+        description: Verifies confirm
+        type: string
+        minLength: 20
+        example: 'VerifyEasy_response:_OK'
+      data:
+        description: custom data. Blank when TYPE = 'CONFIRM'
+        type: string
+        example: ''
+      reason:
+        $ref: '#/definitions/RejectReasons'
+  ReturnParametersRedeem: # define reusable parameters - Order and Redeem Gift Code:
+    type: object
+    properties:
+      result:
+        description: should be 0 if request was succesful, -1 if failed
+        type: integer
+        example: 0
+      ocr:
+        description: order reference number. Blank when type=REDEEM
         type: string
         minLength: 20
         example: ''
       data:
-        description: Blank when TYPE = 'CONFIRM'
+        description: custom data. 
         type: string
         example: ''
       reason:
@@ -456,9 +572,10 @@ parameters:
    la:
       name: la
       in: query
-      description: Country e.g. 'DK'
+      description: Country
       required: true
       type: string
+      enum: ['DK', 'SE', 'NO', 'FI']
    pk:
       name: pk
       in: query
@@ -667,3 +784,10 @@ parameters:
       in: query
       description: Giftcode
       type: string
+   format: 
+      name: format
+      in: query
+      description: output format
+      type: string
+      enum:
+        - JSON
