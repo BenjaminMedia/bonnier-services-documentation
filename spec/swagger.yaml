@@ -310,7 +310,7 @@ paths:
         
         }
         
-        With theese parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=28353656900089170331&refnr=123456789&shopId=5305&cg=8353656989&gclink=http%3A%2F%2Fbonniershop.dk%2Fpdf%2FejiG3fbUmugnce0%25252BarIMlIE3JDJb7ovzrAMDsJbHMo4%2525C2%2525A7%2FGavekort.pdf&format=JSON'
+        With theese parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=28353656900089170331&refnr=123456789&shopId=5305&gc=8353656989&gclink=http%3A%2F%2Fbonniershop.dk%2Fpdf%2FejiG3fbUmugnce0%25252BarIMlIE3JDJb7ovzrAMDsJbHMo4%2525C2%2525A7%2FGavekort.pdf&format=JSON'
         
         This request returned the response: '{ "result": 0, "ocr": "VerifyEasy_response:_OK", "reason": "", "data": "" }'
       
