@@ -21,7 +21,7 @@ info:
     Ip protection
     
     # Testing
-    The test form is only available for requests from the local machine. For testing see url below
+    The test form is only available for requests from the local machine. For testing, see url below
 
   version: '1.0.0' 
 
