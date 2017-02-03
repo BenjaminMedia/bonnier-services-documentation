@@ -9,15 +9,23 @@ basePath: /services/bm400/CMDBAPI.asmx/
 info:
   
   description: |
-    Returns a json-representation of the selected campaign
     # Introduction
     
-    **TEST**
-    The test form is only available for requests from the local machine
+    This documentation describes how to get information about a campaign from Bonnier Magazine Data (BMD) based on a campaign id and a serviceID. The API returns a JSON representation of the selected campaign. 
+    
+    It is based on the assumption, that a campaign can present several offers for a given number of issues, together with one or more premiums, that can be chosen as part of the offer. The premiums will not necessarily be the same for every offer, and the possible payment types may vary per media.
+    
+    It has been decided to omit some of the variables that is contained in the (old) webservice "GetCampaignInfoXmlStringPure", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.
+    
+    # Security
+    Ip protection
+    
+    # Testing
+    The test form is only available for requests from the local machine. For testing we have used serviceID BP_NMS_DK, and campaignIds 324801 and 324839
 
   version: '1.0.0' 
 
-  title: New Magazine Shop 
+  title: Campaign API - New Magazine shop 
 
   contact:
     email: kirsten.ostergaard@bmd.bonnier.dk 
@@ -38,15 +46,16 @@ consumes:
 # The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
   - name: Campaign
-    description: Operations about campaigns. 
-    
-      Returns a json-representation of the selected campaign.
+    description: Get Campaign Info. 
     
     
-      This documentation is based on the assumption, that a campaign can present several offers for a given number of issues, together with one or more premiums, that can be chosen as part of the offer. The premiums will not necessarily be the same for every offer, and the possible payment types may vary per media. 
+      This operation returns a json-representation of the selected campaign. For testing the following parameters have been used
       
       
-      It has been decided to omit some of the variables that is contained in the (old) webservice "GetCampaignInfoXmlStringPure", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.
+      {
+        
+       
+      
       
 # basePath in order to construct the full URL. 
 paths:
@@ -63,7 +72,7 @@ paths:
       
       # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
       description: | 
-        Secutity - ip protection
+        
       
       # operationId should be unique across the whole specification
       operationId: GetCampaignInfo
