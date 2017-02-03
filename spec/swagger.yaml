@@ -21,7 +21,7 @@ info:
     Ip protection
     
     # Testing
-    The test form is only available for requests from the local machine. For testing we have used serviceID BP_NMS_DK, and campaignIds 324801 and 324839
+    The test form is only available for requests from the local machine. For testing see url below
 
   version: '1.0.0' 
 
@@ -43,20 +43,10 @@ consumes:
   - application/xml
 
 
-# The order of the tags can be used to reflect on their order by the parsing tools.
 tags:
   - name: Campaign
     description: Get Campaign Info. 
     
-    
-      This operation returns a json-representation of the selected campaign. For testing the following parameters have been used
-      
-      
-      {
-        
-       
-      
-      
 # basePath in order to construct the full URL. 
 paths:
   '/GetCampaignInfo/': # path parameter in curly braces
@@ -73,7 +63,17 @@ paths:
       # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
       description: | 
         
-      
+        This operation returns a json-representation of the selected campaign. For testing the following parameters have been used
+        
+        {
+          - "serviceId": "BP_NMS_DK"
+          - "campaignId": 324801
+          
+        }
+        
+        With these parameters inserted in the url: 'http://api2.bm-data.com/services/bm400/CMDBAPI.asmx/GetCampaignInfo?campaignId=324801&serviceID=BP_NMS_DK'
+        
+
       # operationId should be unique across the whole specification
       operationId: GetCampaignInfo
       
