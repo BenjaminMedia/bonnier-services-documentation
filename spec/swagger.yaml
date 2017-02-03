@@ -21,7 +21,7 @@ info:
     Ip protection
     
     # Testing
-    The test form is only available for requests from the local machine. For testing, see url below
+    The test form is only available for requests from the local machine. For testing see url below
 
   version: '1.0.0' 
 
@@ -63,7 +63,7 @@ paths:
       # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
       description: | 
         
-        This operation returns a json-representation of the selected campaign. For testing the following parameters have been used
+        This operation returns a json-representation of the selected campaign. For testing the following parameters have been used:
         
         {
           - "serviceId": "BP_NMS_DK"
@@ -73,7 +73,138 @@ paths:
         
         With these parameters inserted in the url: 'http://api2.bm-data.com/services/bm400/CMDBAPI.asmx/GetCampaignInfo?campaignId=324801&serviceID=BP_NMS_DK'
         
-
+        This request returned the response: 
+        
+            
+            "CampaignID": 324801,
+            "Title": "3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder",
+            "ValidFrom": "2016-12-20T00:00:00",
+            "ValidTo": "2017-12-20T00:00:00",
+            "Locale": "sv-SE",
+            "Language": "sv",
+            "Currency": "SEK",
+            "ShowTextInSwedish": "false",
+            "Offers": [
+              {
+                "Id": 3042943,
+                "Responsecode": 65234309,
+                "Name": "3 nr 99,90kr + 39,50kr",
+                "ProductCode": "ATR",
+                "Issues": 3,
+                "OfferText": "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                "AcceptText": "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp. + 10,00 kr. i fakturaavgift.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                "NextPeriodText": "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer.",
+                "InvoiceFeeText": "(+ 10 kr)",
+                "IntroPrice": "99,90",
+                "IntroFee": "39,50",
+                "InvoiceFee": "10,00",
+                "ListPrice": "72,90",
+                "TotalPrice": "139,40",
+                "DibsRecurring": true,
+                "ConditionType": "subscription",
+                "Premiums": [
+                  {
+                    "ArticleName": "Craft Baselayer Sort M",
+                    "ArticleNr": "911442",
+                    "ArticleValue": "450,00"
+                  },
+                  {
+                    "ArticleName": "Craft Baselayer Sort  L",
+                    "ArticleNr": "911443",
+                    "ArticleValue": "45.000,00"
+                  },
+                  {
+                    "ArticleName": "Craft Baselayer Sort XL",
+                    "ArticleNr": "911444",
+                    "ArticleValue": "450,00"
+                  }
+                ]
+              },
+              {
+                "Id": 3042944,
+                "Responsecode": 65234348,
+                "Name": "6 nr 179,90kr + 39,50kr",
+                "ProductCode": "ATR",
+                "Issues": 6,
+                "OfferText": "<ul><li>6 nr av Aktiv Träning + Craft Baselayer Sort M för 179,90 kr + 39,50 kr. i porto och exp.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                "AcceptText": "<ul><li>6 nr av Aktiv Träning + Craft Baselayer Sort M för 179,90 kr + 39,50 kr. i porto och exp. + 10,00 kr. i fakturaavgift.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                "NextPeriodText": "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer.",
+                "InvoiceFeeText": "(+ 10 kr)",
+                "IntroPrice": "179,90",
+                "IntroFee": "39,50",
+                "InvoiceFee": "10,00",
+                "ListPrice": "72,90",
+                "TotalPrice": "219,40",
+                "DibsRecurring": true,
+                "ConditionType": "subscription",
+                "Premiums": [
+                  {
+                    "ArticleName": "Craft Baselayer Sort M",
+                    "ArticleNr": "911442",
+                    "ArticleValue": "450,00"
+                  },
+                  {
+                    "ArticleName": "Craft Baselayer Sort  L",
+                    "ArticleNr": "911443",
+                    "ArticleValue": "45.000,00"
+                  },
+                  {
+                    "ArticleName": "Craft Baselayer Sort XL",
+                    "ArticleNr": "911444",
+                    "ArticleValue": "450,00"
+                  }
+                ]
+              }
+            ],
+            "Medias": [
+              {
+                "Name": "AboHeader",
+                "PaymentTypes": [
+                  {
+                    "Name": "Web"
+                  },
+                  {
+                    "Name": "WebPay"
+                  },
+                  {
+                    "Name": "WebBank"
+                  }
+                ]
+              },
+              {
+                "Name": "Abonner",
+                "PaymentTypes": [
+                  {
+                    "Name": "Web"
+                  },
+                  {
+                    "Name": "WebPay"
+                  },
+                  {
+                    "Name": "WebBank"
+                  }
+                ]
+              },
+              {
+                "Name": "atr",
+                "PaymentTypes": [
+                  {
+                    "Name": "Web"
+                  },
+                  {
+                    "Name": "WebPay"
+                  },
+                  {
+                    "Name": "WebBank"
+                  }
+                ]
+              },
+              {
+                ... more medias with similar parameters ...
+              }
+            ]
+          
+        
       # operationId should be unique across the whole specification
       operationId: GetCampaignInfo
       
