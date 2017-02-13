@@ -131,17 +131,17 @@ paths:
                         "Premiums": [
                           {
                             "ArticleName": "Craft Baselayer Sort M",
-                            "ArticleNr": "911442",
+                            "ArticleNr": "9504769",
                             "ArticleValue": "450,00"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort  L",
-                            "ArticleNr": "911443",
+                            "ArticleNr": "9504770",
                             "ArticleValue": "45.000,00"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort XL",
-                            "ArticleNr": "911444",
+                            "ArticleNr": "9504771",
                             "ArticleValue": "450,00"
                           }
                         ]
@@ -166,17 +166,17 @@ paths:
                         "Premiums": [
                           {
                             "ArticleName": "Craft Baselayer Sort M",
-                            "ArticleNr": "911442",
+                            "ArticleNr": "9504769",
                             "ArticleValue": "450,00"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort  L",
-                            "ArticleNr": "911443",
+                            "ArticleNr": "9504770",
                             "ArticleValue": "45.000,00"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort XL",
-                            "ArticleNr": "911444",
+                            "ArticleNr": "9504771",
                             "ArticleValue": "450,00"
                           }
                         ]
@@ -665,17 +665,29 @@ definitions:
       Locale:
         description: Customer market
         type: string
-        example: "sv-SE"
+        enum: 
+          - "da-DK"
+          - "sv-SE"
+          - "nb-NO"
+          - "fi-FI"
       Language:
         description: Campaign language
         type: string
-        example: sv
+        enum:
+          - "da"
+          - "sv"
+          - "no"
+          - "fi"
       Currency:
         description: Currency of campaign
         type: string
-        example: SEK
+        enum: 
+          - "DKK"
+          - "SEK"
+          - "NOK"
+          - "EUR"
       ShowInSweedish:
-        description: Relevant for Swedish customers in Finland
+        description: True, when Locale is "fi-FI" and language is "sv"
         type: boolean
         example: false
       Offers:
@@ -779,7 +791,11 @@ definitions:
         Name:
           description: Payment method
           type: string
-          example: Web
+          enum:
+            - "Web"
+            - "WebPay"
+            - "MobilePay"
+            - "WebBank"
   Premiums:
     type: array
     items:
@@ -791,7 +807,7 @@ definitions:
         ArticleNumber:
           description: Article number
           type: string
-          example: "911442"
+          example: "9504769"
         ArticleValue: 
           description: Value of this article
           type: number
