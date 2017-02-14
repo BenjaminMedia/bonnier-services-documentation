@@ -17,6 +17,8 @@ info:
     
     It has been decided to omit some of the variables that is contained in the (old) webservice "GetCampaignInfoXmlStringPure", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.
     
+    For the premiums, we present both the premium code and the article Id. The premium code is returned when a customer responds to a campaign, and chooses a premium. The article Id (from Astra) may be needed for later integrations.
+    
     # Security
     Ip protection
     
@@ -131,18 +133,21 @@ paths:
                         "Premiums": [
                           {
                             "ArticleName": "Craft Baselayer Sort M",
-                            "ArticleNr": "9504769",
-                            "ArticleValue": "450,00"
+                            "ArticleNr": "911442",
+                            "ArticleValue": "450,00",
+                            "AstraArticle": "9504769"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort  L",
-                            "ArticleNr": "9504770",
-                            "ArticleValue": "45.000,00"
+                            "ArticleNr": "911443",
+                            "ArticleValue": "45.000,00",
+                            "AstraArticle": "9504770"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort XL",
-                            "ArticleNr": "9504771",
-                            "ArticleValue": "450,00"
+                            "ArticleNr": "911444",
+                            "ArticleValue": "450,00",
+                            "AstraArticle": "9504771"
                           }
                         ]
                       },
@@ -166,18 +171,21 @@ paths:
                         "Premiums": [
                           {
                             "ArticleName": "Craft Baselayer Sort M",
-                            "ArticleNr": "9504769",
-                            "ArticleValue": "450,00"
+                            "ArticleNr": "911442",
+                            "ArticleValue": "450,00",
+                            "AstraArticle": "9504769"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort  L",
-                            "ArticleNr": "9504770",
-                            "ArticleValue": "45.000,00"
+                            "ArticleNr": "911443",
+                            "ArticleValue": "45.000,00",
+                            "AstraArticle": "9504770"
                           },
                           {
                             "ArticleName": "Craft Baselayer Sort XL",
-                            "ArticleNr": "9504771",
-                            "ArticleValue": "450,00"
+                            "ArticleNr": "911444",
+                            "ArticleValue": "450,00",
+                            "AstraArticle": "9504771"
                           }
                         ]
                       }
@@ -805,11 +813,15 @@ definitions:
           type: string
           example: "Craft Baselayer Sort M"
         ArticleNumber:
-          description: Article number
+          description: Article number / premium code. This will be returned when an order with this premium is made
           type: string
-          example: "9504769"
+          example: "911442"
         ArticleValue: 
           description: Value of this article
           type: number
           format: float
           example: 450.00
+        AstraArticle:
+          description: Astra article Id
+          type: string
+          example: "95047069"
