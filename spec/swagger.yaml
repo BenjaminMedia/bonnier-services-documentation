@@ -73,7 +73,7 @@ tags:
     description: Returns status and value of giftcard
 
 paths:
-  '/?type=ORDER': # path parameter in curly braces
+  '/type=ORDER': # path parameter in curly braces
     # documentation for GET operation for this path
     post:
       tags:
@@ -98,11 +98,12 @@ paths:
         - "pr": 009350
         - "sc": 123456
         - "format": "JSON"
-        - "onlinepay": 1
+        - "payment": "WEBPAY"
+        - "device": "MOBILE"
         
         }
         
-        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON&onlinepay=1'
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON&payment=WEBPAY&device=MOBILE'
         
         This request returned the response: '{ "result": 0, "ocr": "24026411300016170321", "reason": "", "data": "" }'
         
@@ -125,7 +126,7 @@ paths:
         - $ref: "#/parameters/return"
         - $ref: "#/parameters/pix"
         - $ref: "#/parameters/sc"
-        - $ref: "#/parameters/onlinepay"
+        - $ref: "#/parameters/payment"
         - $ref: "#/parameters/media"
         - $ref: "#/parameters/activity"
         - $ref: "#/parameters/device"
@@ -157,13 +158,13 @@ paths:
         '500':
           description: Internal server error
   
-  '/?type=CONFIRM':
+  '/type=CONFIRM':
     post:
       tags:
         - Confirm
       summary: Confirm order payment
       description: | 
-          This operation creates a 'payment on the way' notification on the subscription. This should only be used after a successful payment. For testing, the following example data have been used:
+          This operation creates a 'payment on the way' notification on the subscription. This should only be used after a successful payment, though not if payment has been made by GIRO. For testing, the following example data have been used:
           
           {
           - "sid": "BP_NMS_DK"
@@ -210,7 +211,7 @@ paths:
         '500':
           description: Internal server error
           
-  '/?type=ORDER&pk=GKW':
+  '/type=ORDER&pk=GKW':
     post:
       tags:
         - Register Donor
@@ -230,13 +231,14 @@ paths:
         - "rc": 09041865
         - "sc": 110303
         - "format": "JSON"
-        - "onlinepay": 1
+        - "payment": "WEBPAY"
         - "gcval": 19900
         - "gcpk": "ILL"
+        - "device": "MOBILE"
         
         }
         
-        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=GKW&kk=09041865&pr=009350&sc=110303&fn=Lars&ln=Madsen&ad=%C3%86girsgade+128&pc=8888&email=larsmtest@mail.dk&sid=BP_NMS_DK&format=JSON&onlinepay=1&gcval=19900&gcpk=ILL' 
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=GKW&kk=09041865&pr=009350&sc=110303&fn=Lars&ln=Madsen&ad=%C3%86girsgade+128&pc=8888&email=larsmtest@mail.dk&sid=BP_NMS_DK&format=JSON&payment=WEBPAY&gcval=19900&gcpk=ILL&device=MOBILE' 
           
         This request returned the response: '{ "result": 0, "ocr": "28354058700089170321", "reason": "", "data": "8354058789" }'
         
@@ -265,7 +267,7 @@ paths:
         - $ref: "#/parameters/return"
         - $ref: "#/parameters/pix"
         - $ref: "#/parameters/sc"
-        - $ref: "#/parameters/onlinepay"
+        - $ref: "#/parameters/payment"
         - $ref: "#/parameters/media"
         - $ref: "#/parameters/activity"
         - $ref: "#/parameters/device"
@@ -291,7 +293,7 @@ paths:
         '500':
           description: Internal server error
 
-  '/?type=CONFIRM&gc=':
+  '/type=CONFIRM&gc=':
     post:
       tags:
         - Register Donor Payment
@@ -345,7 +347,7 @@ paths:
         '500':
           description: Internal server error
           
-  '/?TYPE=REDEEM':
+  '/TYPE=REDEEM':
     post:
       tags:
         - Redeem Gift Code
@@ -371,7 +373,7 @@ paths:
          
         }
         
-        With theese parameters inserted into the url: 'http://order.bm-data.com/?la=DK&type=REDEEM&pk=ILL&kk=09041865&pr=009350&sc=110303&fn=Hans&ln=Madsen&ad=%C3%86girsgade+4&pc=8888&email=hansmtest@mail.dk&sid=BP_WS&format=JSON&onlinepay=1&gcval=19900&gc=8354058789'
+        With theese parameters inserted into the url: 'http://order.bm-data.com/?la=DK&type=REDEEM&pk=ILL&kk=09041865&pr=009350&sc=110303&fn=Hans&ln=Madsen&ad=%C3%86girsgade+4&pc=8888&email=hansmtest@mail.dk&sid=BP_NMS_DK&format=JSON&gcval=19900&gc=8354058789'
         
         This request returned the response: '{ "result": 0, "ocr": "", "reason": "", "data": "" }'
         
@@ -632,11 +634,12 @@ parameters:
       type: integer
       minLength: 6
       maxLength: 6
-   onlinepay:
-      name: onlinepay
+   payment:
+      name: payment
       in: query
-      description: 0 or blank = GIRO/Unknown, 1 = online creditcard payment
-      type: integer
+      description: payment type
+      type: string
+      enum: ['WEB','WEBPAY','WEBBANK','MOBILEPAY']
    media:
       name: media
       in: query
