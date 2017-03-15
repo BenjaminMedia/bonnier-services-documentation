@@ -779,7 +779,7 @@ parameters:
    op:
       name: op
       in: query
-      description: Indicates a gift order (gave / gåvo abon). When true, receiver name fields below must exist
+      description: Indicates that this order has a separate billing addres. When true, receiver name fields below must exist
       type: boolean
    fn2:
       name: fn2
