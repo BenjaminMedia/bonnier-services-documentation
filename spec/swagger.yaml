@@ -779,7 +779,7 @@ parameters:
    op:
       name: op
       in: query
-      description: 1 indicates different billing address, 2 indicates gift order . When 1 or 2, receiver name fields below must exist
+      description: when blank, this is a normal order, when 1 the order has a different billing address, when 2 the order is a gift order . When 1 or 2, receiver name fields below must exist
       type: string
       enum: ['','1', '2']
    fn2:
