@@ -444,7 +444,7 @@ paths:
       
         With theese parameters inserted into the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=STATUS&gc=8353656989&format=JSON'
         
-        This request returned the response: '{ "giftCode": "8353656989", "productCode": "ILL", "isValid": false, "validUntil": "2018-02-02T00:00:00", "giftValue": 199.00, "status": "R" }'
+        This request returned the response: '{ "canRedeemAs": [ { "ResponseCode": 34011921, "ProductCode": "ILL", "NoOfIssues": 5 } ], "giftCode": "8353656989", "productCode": "ILL", "isValid": false, "validUntil": "2018-02-02T00:00:00", "giftValue": 199.00, "status": "R" }'
       
       operationId: getGiftcard  Status
       parameters:
@@ -476,6 +476,18 @@ definitions:
     description: blank if result = 0, Error message if result = -1
     type: string
     	enum: ['', '1', '2', '3','4', '5', '6', '7', '8', '9', '10', '11','12', '13', '20', '99', '100']	
+  noOfIssues:
+    description: number of issue (for each possible magazine)
+    type: integer
+    example: 5
+  responseCode:
+    description: responsecode(s) for each possible magazine. Returned as multible items if productCode is "GKW"
+    type: integer
+    example: 34011921
+  productCode:
+    description: productCode(s) for each possible magazine. Returned as multiple items if productCode is "GKW"
+    type: string
+    example: 'ILL'
     
   ReturnParameters: # define reusable parameters - Order and Redeem Gift Code:
     type: object
@@ -555,6 +567,13 @@ definitions:
   ReturnGiftCodeStatusParameters: # define reusable parameters - Get Giftcode Status:
     type: object
     properties:
+      canRedeemAs:
+        description: array of possible productCodes, responseCodes and noOfIssues
+        type: array
+        items: 
+          - $ref: '#/definitions/responseCode'
+          - $ref: '#/definitions/productCode'
+          - $ref: '#/definitions/noOfIssues'
       giftCode:
         description: gift code (same as input)
         type: string
