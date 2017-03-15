@@ -779,32 +779,33 @@ parameters:
    op:
       name: op
       in: query
-      description: Indicates that this order has a separate billing addres. When true, receiver name fields below must exist
-      type: boolean
+      description: 1 indicates different billing address, 2 indicates gift order . When 1 or 2, receiver name fields below must exist
+      type: string
+      enum: ['','1', '2']
    fn2:
       name: fn2
       in: query
-      description: Firstname of person who receives magazine when op=true
+      description: Firstname of person who receives magazine when op=1 or 2
       type: string
    ln2:
       name: ln2
       in: query
-      description: Lastname of person who receives magazine when op=true
+      description: Lastname of person who receives magazine when op=1 or 2
       type: string
    en2:
       name: en2
       in: query
-      description: Extraname C/O of person who receives magazine when op=true
+      description: Extraname C/O of person who receives magazine when op=1 or 2
       type: string
    ad2:
       name: ad2
       in: query
-      description: Address + streetnr of person who receives magazine when op=true
+      description: Address + streetnr of person who receives magazine when op=1 or 2
       type: string
    pc2:
       name: pc2
       in: query
-      description: Postal code of person who receives magazine when op=true
+      description: Postal code of person who receives magazine when op=1 or 2
       type: string
    gcval:
       name: gcval
