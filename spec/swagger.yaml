@@ -60,7 +60,13 @@ consumes:
   - application/json
 tags:
   - name: Order
-    description: Submit purchase order. An order can have 3 different billingtypes, defined by the parameter 'op'. This parameter defines weather the order is a 'normal' order (op=''), an order for a recurring subscription with a differend bill-to address (op=1), or a giftorder (op=2). When op is 1 or 2, additional name fields for the recipient must be added.
+    description: Submit purchase order. An order can have 2 different billingtypes, defined by the parameter 'op'. This parameter defines weather the order is a 'normal' order (op=''), an order for a recurring subscription with a differend bill-to address (op=1).
+    
+    
+      When op is 1, additional name fields for the recipient must be added.
+      
+      
+      See examples 1 and 2 below.
   - name: Confirm
     description: Confirm order payment
   - name: Register Donor
@@ -83,7 +89,7 @@ paths:
       
       description: | 
         
-        This operation creates an order transaction. The payment is still not confirmed at this stage. For testing, the following example data have been used:
+        Example 1: This operation creates an order transaction for a normal order (se below for an order with a different bill-to address). The payment is still not confirmed at this stage. For testing, the following example data have been used:
         
         {
         - "sid": "BP_NMS_DK"
@@ -106,6 +112,35 @@ paths:
         With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON&payment=WEBPAY&device=MOBILE'
         
         This request returned the response: '{ "result": 0, "ocr": "24026411300016170321", "reason": "", "data": "" }'
+        
+        Example 2: This operation creates an order transaction for an order where the bill-to address differs from the ship-to address. The payment is still not confirmed at this stage. For testing, the following example data have been used:
+        
+        {
+        - "sid": "BP_NMS_DK"
+        - "la": "DK"
+        - "fn": "Lars"
+        - "ln": "Jensen"
+        - "ad": "Ægirsgade 127"
+        - "pc": 8888
+        - "email": "larstest@mail.dk"
+        - "pk": "BOB"
+        - "rc": 09041865
+        - "pr": 009350
+        - "sc": 123456
+        - "op": 1
+        - "fn2": "Mikkel"
+        - "ln2": "Jensen"
+        - "ad2": "Århusgade 11"
+        - "pc2": 8888
+        - "format": "JSON"
+        - "payment": "WEBPAY"
+        - "device": "MOBILE"
+        
+        }
+        
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&op=1&fn2=Mikkel&ln2=Jensen&ad2=%C3%85rhusgade&pc2=8888&sid=BP_NMS_DK&format=JSON&payment=WEBPAY&device=MOBILE'
+        
+        This request returned the response: '{ "result": 0, "ocr": "24009769500016170761", "reason": "", "data": "" }'
         
       operationId: submitOrder
       
@@ -714,9 +749,16 @@ parameters:
    shopid:
       name: shopid
       in: query
-      description: Dibs shop ID. E.g. 5305 for BP, 3547 = BT
+      description: Dibs shop ID. 
+        
+        - 90196080 for payments from Sweden, Norway and Findland, and from Denmark that are NOT Dankort, Visa/Dankort or MobilePay
+        
+        - 90196082 for payments from Denmark that ARE Dankort or Visa/Dankort, 90218256 for payments from Denmark made with MobilePay.
+        
+        - 90219610 is for TESTING ONLY
       required: true
       type: string
+      enum: [90196080,90196082,90218256,90219610]
       minLength: 4
       maxLength: 4
    recurring:
@@ -779,33 +821,33 @@ parameters:
    op:
       name: op
       in: query
-      description: when blank, this is a normal order, when 1 the order has a different billing address, when 2 the order is a gift order . When 1 or 2, receiver name fields below must exist
+      description: when blank, this is a normal order, when 1 the order has a different billing address. When 1, receiver name fields below must exist
       type: string
-      enum: ['','1', '2']
+      enum: ['','1']
    fn2:
       name: fn2
       in: query
-      description: Firstname of person who receives magazine when op=1 or 2
+      description: Firstname of person who receives magazine when op=1
       type: string
    ln2:
       name: ln2
       in: query
-      description: Lastname of person who receives magazine when op=1 or 2
+      description: Lastname of person who receives magazine when op=1
       type: string
    en2:
       name: en2
       in: query
-      description: Extraname C/O of person who receives magazine when op=1 or 2
+      description: Extraname C/O of person who receives magazine when op=1
       type: string
    ad2:
       name: ad2
       in: query
-      description: Address + streetnr of person who receives magazine when op=1 or 2
+      description: Address + streetnr of person who receives magazine when op=1
       type: string
    pc2:
       name: pc2
       in: query
-      description: Postal code of person who receives magazine when op=1 or 2
+      description: Postal code of person who receives magazine when op=1
       type: string
    gcval:
       name: gcval
