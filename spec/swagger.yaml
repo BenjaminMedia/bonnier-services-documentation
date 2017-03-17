@@ -207,13 +207,13 @@ paths:
           - "type": "CONFIRM"
           - "ocr": 24026411300016170321
           - "refnr": 123456789
-          - "shopid": 5305
+          - "shopid": 90219610
           - "recurring": 1
           - "format": "JSON"
           
           }
           
-          With these parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=24026411300016170321&refnr=123456789&shopId=5305&recurring=1&format=JSON'
+          With these parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=24026411300016170321&refnr=123456789&shopId=90219610&recurring=1&format=JSON'
           
           This request returned the response: '{ "result": 0, "ocr": "VerifyEasy_response:_OK", "reason": "", "data": "" }'
       operationId: confirm
