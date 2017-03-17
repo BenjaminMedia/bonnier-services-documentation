@@ -60,7 +60,7 @@ consumes:
   - application/json
 tags:
   - name: Order
-    description: Submit purchase order
+    description: Submit purchase order. An order can have 3 different billingtypes, defined by the parameter 'op'. This parameter defines weather the order is a 'normal' order, a giftorder, or an order for a recurring subscription with a differend bill-to address
   - name: Confirm
     description: Confirm order payment
   - name: Register Donor
