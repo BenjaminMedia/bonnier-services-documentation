@@ -252,7 +252,7 @@ paths:
         - Register Donor
       summary: Register a gift card donor
       description: |
-        This operation creates an order transaction for a giftcard. The donor parameters are registered, and a giftcode is created. This giftcode will also be sent on email. Note that the order must be registered with `pk`(productCode) = GKW. If the giftcard is for an optional magazine, the value `gc` is blank. For testing, the following example data have been used:
+        This operation creates an order transaction for a giftcard. The donor parameters are registered, and a giftcode is created. This giftcode will also be sent on email. Note that the order must be registered with `pk`(productCode) = GKW. If the giftcard is for an optional magazine, the value `gcpk` is blank. For testing, the following example data have been used:
         
         {
         - "sid": "PB_NMS_DK"
@@ -343,11 +343,12 @@ paths:
         - "gc": 8354058789
         - "ocr": 28354058700089170321
         - "gclink": 'http%3A%2F%2Fshop.mmm.dk%2Fpdf%2Fq6imrzJx6HMdZV5uFzWKTJ%25252BXArgqM7Tn3i406BL12v8%2525C2%2525A7%2FGavekort.pdf'
+        - "shopid": 90219610
         - "refnr": 123456789
         
         }
         
-        With theese parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=28353656900089170331&refnr=123456789&shopId=5305&gc=8353656989&gclink=http%3A%2F%2Fbonniershop.dk%2Fpdf%2FejiG3fbUmugnce0%25252BarIMlIE3JDJb7ovzrAMDsJbHMo4%2525C2%2525A7%2FGavekort.pdf&format=JSON'
+        With theese parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=28353656900089170331&refnr=123456789&shopId=90219610&gc=8353656989&gclink=http%3A%2F%2Fbonniershop.dk%2Fpdf%2FejiG3fbUmugnce0%25252BarIMlIE3JDJb7ovzrAMDsJbHMo4%2525C2%2525A7%2FGavekort.pdf&format=JSON'
         
         This request returned the response: '{ "result": 0, "ocr": "VerifyEasy_response:_OK", "reason": "", "data": "" }'
       
@@ -759,8 +760,8 @@ parameters:
       required: true
       type: string
       enum: [90196080,90196082,90218256,90219610]
-      minLength: 4
-      maxLength: 4
+      minLength: 8
+      maxLength: 8
    recurring:
       name: recurring
       in: query
