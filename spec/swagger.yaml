@@ -70,6 +70,8 @@ tags:
       
       
       Newsletter permissions and other permissions (or no permissions) are given in the sourcecode. This field is mandatory.
+  - name: Permissions
+    description: Give or revoke permission. (E.g. global, newsletters, offers)
   - name: Confirm
     description: Confirm order payment
   - name: Register Donor
@@ -183,6 +185,67 @@ paths:
         - $ref: "#/parameters/en2"
         - $ref: "#/parameters/ad2"
         - $ref: "#/parameters/pc2"
+        - $ref: "#/parameters/format"
+      
+      produces:
+        - application/json
+      responses: # list of responses
+        '200':
+          description: OK
+          schema: # response schema can be specified for each response
+            $ref: '#/definitions/ReturnParameters'
+          
+        '500':
+          description: Internal server error
+
+  '/type=ADDPERM/DELPERM': # path parameter in curly braces
+    # documentation for GET operation for this path
+    post:
+      tags:
+        - Permissions
+      
+      summary: Subscribe/Unsubscribe to newsletter or give/revoke permission
+      
+      description: | 
+        
+        Example 1: This operation creates a transaction for giving or revoking permissions. The sourcecode is the ID for the permission given/revoked. To give a permission, TYPE must be "ADDPERM". To revoke a permission, TYPE must be "DELPERM". For testing, the following example data have been used:
+        
+        {
+        - "sid": "BP_NMS_DK"
+        - "Type": "ADDPERM"
+        - "la": "DK"
+        - "fn": "Lars"
+        - "ln": "Jensen"
+        - "ad": "Ægirsgade 127"
+        - "pc": 8888
+        - "email": "larstest@mail.dk"
+        - "sc": 198325
+        - "format": "JSON"
+        
+        }
+        
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&TYPE=ADDPERM&sc=198325&fn=Lars&ln=Jensen&ad=Ægirsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON'
+        
+        This request returned the response: '{ "result": 0, "ocr": "24026411300016170321", "reason": "", "data": "" }'
+        
+      operationId: submitPermission
+      
+      parameters:
+        - $ref: "#/parameters/sid"
+        - $ref: "#/parameters/la"
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a PERMISSION request
+          type: string
+          enum:
+            - 'ADPERM'
+            - 'DELPERM'
+        - $ref: "#/parameters/sc"
+        - $ref: "#/parameters/fn"
+        - $ref: "#/parameters/ln"
+        - $ref: "#/parameters/ad"
+        - $ref: "#/parameters/pc"
+        - $ref: "#/parameters/email"
         - $ref: "#/parameters/format"
       
       produces:
