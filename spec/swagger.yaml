@@ -67,6 +67,9 @@ tags:
       
       
       See examples 1 and 2 below.
+      
+      
+      Newsletter permissions and other permissions (or no permissions) are given in the sourcecode. This field is mandatory.
   - name: Confirm
     description: Confirm order payment
   - name: Register Donor
