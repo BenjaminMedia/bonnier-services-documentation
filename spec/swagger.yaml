@@ -224,7 +224,7 @@ paths:
         
         }
         
-        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&TYPE=ADDPERM&sc=198325&fn=Lars&ln=Jensen&ad=Ægirsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON'
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&TYPE=ADDPERM&sc=198325&fn=Lars&ln=Jensen&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON'
         
         This request returned the response: '{ "result": 0, "ocr": "", "reason": "0", "data": "" }'
         
@@ -243,8 +243,6 @@ paths:
         - $ref: "#/parameters/sc"
         - $ref: "#/parameters/fn"
         - $ref: "#/parameters/ln"
-        - $ref: "#/parameters/ad"
-        - $ref: "#/parameters/pc"
         - $ref: "#/parameters/email"
         - $ref: "#/parameters/format"
       
