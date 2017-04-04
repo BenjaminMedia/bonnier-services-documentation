@@ -240,6 +240,7 @@ paths:
           enum:
             - 'ADPERM'
             - 'DELPERM'
+          required: true
         - $ref: "#/parameters/sc"
         - $ref: "#/parameters/fn"
         - $ref: "#/parameters/ln"
