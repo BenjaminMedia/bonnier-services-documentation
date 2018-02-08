@@ -1,0 +1,925 @@
+swagger: '2.0'
+schemes:
+  - https
+host: order.bm-data.com
+basePath: /
+info:
+  description: |
+    # Introduction
+    This document describes how to submit orders to Bonnier Magazine Data (BMD) from various campaign activities. Orders 3 validates parameters, queues the order in backend system, and replies in XML or JSON format. 
+    # Security
+    ip protection
+    # Reject Reasons
+    When a request is succesful, the response parameter "Result" will be 0, and the parameter "Reason" will be blank. If the request fails, the page will return -1+"reject reason" (e.g. -112). The reject reason numbers have the below listed translations
+      - **1** order rejected due to Bonnier policy
+      - **2** order rejected because order is duplicate of existing order
+      - **3** order rejected because of parameter validation error
+      - **4** order rejected because of other error / exeption
+      - **5** order rejected because of invalid country
+      - **6** order rejected because of invalid postal number
+      - **7** order rejected because of invalid serviceID
+      - **8** order rejected because of invalid customer nr
+      - **9** lead rejected because of invalid sourcecode
+      - **10** rejected by PDB (check log in PDB)
+      - **11** CONFIRM order failed
+      - **12** Subscription/customer not found
+      - **13** Subscription/customer is inactive
+      - **20** Giftcard Order failed
+      - **99** wrong request, no parameters received
+      - **100** order confirmed but ignored
+      
+    # Test Data
+    For testing parameter validation, connection, character sets and similar you can use postal code 0000 (in DK and NO) or 00000 (in SE and FI) when submitting data
+
+
+    If you need to test a complete flow **including email confirmation and tracking callback** you must use postal code **8888** (DK and NO) or **88888** (SE and FI).
+
+    This way the backend system can recognize the test orders and stop them from being processed.
+
+    If using postal code 0000/00000 you will receive reasoncode = 100 in the xml-response.
+    100 = order confirmed but ignored.
+
+    **You can also use parameter TEST=1** In that case, the reject reason "100" will be returned
+  version: 1.0.0
+  title: Orders3 API - New Magazine Shop
+  contact:
+    email: kirsten.ostergaard@bmd.bonnier.dk
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  x-logo:
+    url: 'http://www.bonnier.com/Global/Images/Bonnier_logotype.png'
+produces:
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: Order
+    description: |-
+      Submit purchase order. An order can have 2 different billingtypes, defined by the parameter 'op'. This parameter defines weather the order is a 'normal' order (op=''), an order for a recurring subscription with a differend bill-to address (op=1).
+
+      When op is 1, additional name fields for the recipient must be added.
+
+      See examples 1 and 2 below.
+
+      Newsletter permissions and other permissions (or no permissions) are given in the sourcecode. This field is mandatory.
+  - name: Permissions
+    description: 'Give or revoke permission. (E.g. global, newsletters, offers)'
+  - name: Confirm
+    description: Confirm order payment
+  - name: Register Donor
+    description: Submit giftcard order
+  - name: Register Donor Payment
+    description: Confirm giftcard order payment
+  - name: Redeem Gift Code
+    description: Submit information about receiver of gift card when this is redeemed.
+  - name: Get Giftcode Status
+    description: Returns status and value of giftcard
+paths:
+  /type=ORDER:
+    post:
+      tags:
+        - Order
+      summary: Send purchase order to the magazine shop
+      description: |
+
+        Example 1: This operation creates an order transaction for a normal order (se below for an order with a different bill-to address). The payment is still not confirmed at this stage. For testing, the following example data have been used:
+
+        {
+        - "sid": "BP_NMS_DK"
+        - "la": "DK"
+        - "fn": "Lars"
+        - "ln": "Jensen"
+        - "ad": "Ægirsgade 127"
+        - "pc": 8888
+        - "email": "larstest@mail.dk"
+        - "pk": "BOB"
+        - "rc": 09041865
+        - "pr": 009350
+        - "sc": 123456
+        - "format": "JSON"
+        - "payment": "WEBPAY"
+        - "device": "MOBILE"
+
+        }
+
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON&payment=WEBPAY&device=MOBILE'
+
+        This request returned the response: '{ "result": 0, "ocr": "24026411300016170321", "reason": "", "data": "" }'
+
+        Example 2: This operation creates an order transaction for an order where the bill-to address differs from the ship-to address. The payment is still not confirmed at this stage. For testing, the following example data have been used:
+
+        {
+        - "sid": "BP_NMS_DK"
+        - "la": "DK"
+        - "fn": "Lars"
+        - "ln": "Jensen"
+        - "ad": "Ægirsgade 127"
+        - "pc": 8888
+        - "email": "larstest@mail.dk"
+        - "pk": "BOB"
+        - "rc": 09041865
+        - "pr": 009350
+        - "sc": 123456
+        - "op": 1
+        - "fn2": "Mikkel"
+        - "ln2": "Jensen"
+        - "ad2": "Århusgade 11"
+        - "pc2": 8888
+        - "format": "JSON"
+        - "payment": "WEBPAY"
+        - "device": "MOBILE"
+
+        }
+
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=BOB&kk=09041865&pr=009350&sc=110303&%20fn=Lars&ln=Jensen&ad=%C3%86girsgade+127&pc=8888&email=larstest@mail.dk&op=1&fn2=Mikkel&ln2=Jensen&ad2=%C3%85rhusgade&pc2=8888&sid=BP_NMS_DK&format=JSON&payment=WEBPAY&device=MOBILE'
+
+        This request returned the response: '{ "result": 0, "ocr": "24009769500016170761", "reason": "", "data": "" }'
+      operationId: submitOrder
+      parameters:
+        - $ref: '#/parameters/sid'
+        - $ref: '#/parameters/la'
+        - name: type
+          in: query
+          description: RequestType to indicate that this is an ORDER request
+          type: string
+          enum:
+            - ORDER
+            - ''
+          default: ''
+        - $ref: '#/parameters/pk'
+        - $ref: '#/parameters/rc'
+        - $ref: '#/parameters/pr'
+        - $ref: '#/parameters/return'
+        - $ref: '#/parameters/pix'
+        - $ref: '#/parameters/sc'
+        - $ref: '#/parameters/payment'
+        - $ref: '#/parameters/media'
+        - $ref: '#/parameters/activity'
+        - $ref: '#/parameters/device'
+        - $ref: '#/parameters/cnr'
+        - $ref: '#/parameters/fn'
+        - $ref: '#/parameters/ln'
+        - $ref: '#/parameters/en'
+        - $ref: '#/parameters/ad'
+        - $ref: '#/parameters/pc'
+        - $ref: '#/parameters/email'
+        - $ref: '#/parameters/phone'
+        - $ref: '#/parameters/mobile'
+        - $ref: '#/parameters/op'
+        - $ref: '#/parameters/fn2'
+        - $ref: '#/parameters/ln2'
+        - $ref: '#/parameters/en2'
+        - $ref: '#/parameters/ad2'
+        - $ref: '#/parameters/pc2'
+        - $ref: '#/parameters/format'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ReturnParameters'
+        '500':
+          description: Internal server error
+  /type=ADDPERM/DELPERM:
+    post:
+      tags:
+        - Permissions
+      summary: Subscribe/Unsubscribe to newsletter or give/revoke permission
+      description: |
+
+        Example 1: This operation creates a transaction for giving or revoking permissions. The sourcecode is the ID for the permission given/revoked. To give a permission, TYPE must be "ADDPERM". To revoke a permission, TYPE must be "DELPERM". For testing, the following example data have been used:
+
+        {
+        - "sid": "BP_NMS_DK"
+        - "Type": "ADDPERM"
+        - "la": "DK"
+        - "fn": "Lars"
+        - "ln": "Jensen"
+        - "ad": "Ægirsgade 127"
+        - "pc": 8888
+        - "email": "larstest@mail.dk"
+        - "sc": 198325
+        - "format": "JSON"
+
+        }
+
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&TYPE=ADDPERM&sc=198325&fn=Lars&ln=Jensen&email=larstest@mail.dk&sid=BP_NMS_DK&format=JSON'
+
+        This request returned the response: '{ "result": 0, "ocr": "", "reason": "0", "data": "" }'
+      operationId: submitPermission
+      parameters:
+        - $ref: '#/parameters/sid'
+        - $ref: '#/parameters/la'
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a PERMISSION request
+          type: string
+          enum:
+            - ADPERM
+            - DELPERM
+          required: true
+        - $ref: '#/parameters/sc'
+        - $ref: '#/parameters/fn'
+        - $ref: '#/parameters/ln'
+        - $ref: '#/parameters/email'
+        - $ref: '#/parameters/format'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ReturnParameters'
+        '500':
+          description: Internal server error
+  /type=CONFIRM:
+    post:
+      tags:
+        - Confirm
+      summary: Confirm order payment
+      description: |
+        This operation creates a 'payment on the way' notification on the subscription. This should only be used after a successful payment, though not if payment has been made by GIRO. For testing, the following example data have been used:
+
+        {
+        - "sid": "BP_NMS_DK"
+        - "la": "DK"
+        - "type": "CONFIRM"
+        - "ocr": 24026411300016170321
+        - "refnr": 123456789
+        - "shopid": 90219610
+        - "recurring": 1
+        - "format": "JSON"
+
+        }
+
+        With these parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=24026411300016170321&refnr=123456789&shopId=90219610&recurring=1&format=JSON'
+
+        This request returned the response: '{ "result": 0, "ocr": "VerifyEasy_response:_OK", "reason": "", "data": "" }'
+      operationId: confirm
+      parameters:
+        - $ref: '#/parameters/sid'
+        - $ref: '#/parameters/la'
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a CONFIRM request
+          required: true
+          type: string
+          enum:
+            - CONFIRM
+        - $ref: '#/parameters/ocr'
+        - $ref: '#/parameters/refnr'
+        - $ref: '#/parameters/ccpart'
+        - $ref: '#/parameters/ccyy'
+        - $ref: '#/parameters/ccmm'
+        - $ref: '#/parameters/cctype'
+        - $ref: '#/parameters/shopid'
+        - $ref: '#/parameters/recurring'
+        - $ref: '#/parameters/format'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ReturnParametersCONFIRM'
+        '500':
+          description: Internal server error
+  /type=ORDER&pk=GKW:
+    post:
+      tags:
+        - Register Donor
+      summary: Register a gift card donor
+      description: |
+        This operation creates an order transaction for a giftcard. The donor parameters are registered, and a giftcode is created. This giftcode will also be sent on email. Note that the order must be registered with `pk`(productCode) = GKW. If the giftcard is for an optional magazine, the value `gcpk` is blank. For testing, the following example data have been used:
+
+        {
+        - "sid": "PB_NMS_DK"
+        - "la": "DK"
+        - "fn": "Lars" 
+        - "ln": "Madsen"
+        - "ad": "Ægirsgade 128"
+        - "pc": 8888
+        - "email": "larsmtest@mail.dk"
+        - "pk": "GKW"
+        - "rc": 09041865
+        - "sc": 110303
+        - "format": "JSON"
+        - "payment": "WEBPAY"
+        - "gcval": 19900
+        - "gcpk": "ILL"
+        - "device": "MOBILE"
+
+        }
+
+        With these parameters inserted in the url: 'http://order.bm-data.com/?la=DK&pk=GKW&kk=09041865&pr=009350&sc=110303&fn=Lars&ln=Madsen&ad=%C3%86girsgade+128&pc=8888&email=larsmtest@mail.dk&sid=BP_NMS_DK&format=JSON&payment=WEBPAY&gcval=19900&gcpk=ILL&device=MOBILE' 
+          
+        This request returned the response: '{ "result": 0, "ocr": "28354058700089170321", "reason": "", "data": "8354058789" }'
+      operationId: registerDonor
+      parameters:
+        - $ref: '#/parameters/sid'
+        - $ref: '#/parameters/la'
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a CONFIRM request
+          required: true
+          type: string
+          enum:
+            - ORDER
+            - ''
+          default: ''
+        - name: pk
+          in: query
+          description: Productcode - must be 'GKW'
+          required: true
+          type: string
+          enum:
+            - GKW
+        - $ref: '#/parameters/rc'
+        - $ref: '#/parameters/pr'
+        - $ref: '#/parameters/return'
+        - $ref: '#/parameters/pix'
+        - $ref: '#/parameters/sc'
+        - $ref: '#/parameters/payment'
+        - $ref: '#/parameters/media'
+        - $ref: '#/parameters/activity'
+        - $ref: '#/parameters/device'
+        - $ref: '#/parameters/cnr'
+        - $ref: '#/parameters/fn'
+        - $ref: '#/parameters/ln'
+        - $ref: '#/parameters/en'
+        - $ref: '#/parameters/ad'
+        - $ref: '#/parameters/pc'
+        - $ref: '#/parameters/email'
+        - $ref: '#/parameters/phone'
+        - $ref: '#/parameters/mobile'
+        - $ref: '#/parameters/gcval'
+        - $ref: '#/parameters/gcpk'
+        - $ref: '#/parameters/format'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ReturnParametersGiftCode'
+        '500':
+          description: Internal server error
+  /type=CONFIRM&gc=:
+    post:
+      tags:
+        - Register Donor Payment
+      summary: Register and confirm donor payment
+      description: |
+        This operation creates a 'payment on the way' notification on the subscription. It also activates the giftcode, and should only be called after a succesful payment. For testing, the following example data have been used:
+
+        {
+        - "sid": "PB_NMS_DK"
+        - "la": "DK"
+        - "type": "CONFIRM"
+        - "gc": 8354058789
+        - "ocr": 28354058700089170321
+        - "gclink": 'http%3A%2F%2Fshop.mmm.dk%2Fpdf%2Fq6imrzJx6HMdZV5uFzWKTJ%25252BXArgqM7Tn3i406BL12v8%2525C2%2525A7%2FGavekort.pdf'
+        - "shopid": 90219610
+        - "refnr": 123456789
+
+        }
+
+        With theese parameters inserted in the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=CONFIRM&ocr=28353656900089170331&refnr=123456789&shopId=90219610&gc=8353656989&gclink=http%3A%2F%2Fbonniershop.dk%2Fpdf%2FejiG3fbUmugnce0%25252BarIMlIE3JDJb7ovzrAMDsJbHMo4%2525C2%2525A7%2FGavekort.pdf&format=JSON'
+
+        This request returned the response: '{ "result": 0, "ocr": "VerifyEasy_response:_OK", "reason": "", "data": "" }'
+      operationId: confirm donor payment
+      parameters:
+        - $ref: '#/parameters/sid'
+        - $ref: '#/parameters/la'
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a CONFIRM request
+          required: true
+          type: string
+          enum:
+            - CONFIRM
+        - $ref: '#/parameters/ocr'
+        - $ref: '#/parameters/refnr'
+        - $ref: '#/parameters/ccpart'
+        - $ref: '#/parameters/ccyy'
+        - $ref: '#/parameters/ccmm'
+        - $ref: '#/parameters/cctype'
+        - $ref: '#/parameters/shopid'
+        - $ref: '#/parameters/gc'
+        - $ref: '#/parameters/gclink'
+        - $ref: '#/parameters/format'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ReturnParametersCONFIRM'
+        '500':
+          description: Internal server error
+  /TYPE=REDEEM:
+    post:
+      tags:
+        - Redeem Gift Code
+      summary: Post info about receiver of giftcard
+      description: |
+        This operation validates the giftcode and registers receiver parameters when the giftcard is redeemed. For testing, the following example data have been used:
+
+        {
+         - "sid": "PB_NMS_DK"
+         - "la": "DK"
+         - "type": "REDEEM"
+         - "fn": "Hans" 
+         - "ln": "Madsen"
+         - "ad": "Ægirsgade 4"
+         - "pc": 8888
+         - "email": "hansmtest@mail.dk"
+         - "pk": "ILL"
+         - "rc": 09041865
+         - "sc": 110303
+         - "format": "JSON"
+         - "gcval": 19900
+         - "gc": 8354058789
+         
+        }
+
+        With theese parameters inserted into the url: 'http://order.bm-data.com/?la=DK&type=REDEEM&pk=ILL&kk=09041865&pr=009350&sc=110303&fn=Hans&ln=Madsen&ad=%C3%86girsgade+4&pc=8888&email=hansmtest@mail.dk&sid=BP_NMS_DK&format=JSON&gcval=19900&gc=8354058789'
+
+        This request returned the response: '{ "result": 0, "ocr": "", "reason": "", "data": "" }'
+      operationId: registerReceiver
+      parameters:
+        - $ref: '#/parameters/sid'
+        - $ref: '#/parameters/la'
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a REDEEM request
+          required: true
+          type: string
+          enum:
+            - REDEEM
+        - name: pk
+          in: query
+          description: Productcode - must be 'GKW'
+          required: true
+          type: string
+          enum:
+            - GKW
+        - $ref: '#/parameters/rc'
+        - $ref: '#/parameters/pr'
+        - $ref: '#/parameters/return'
+        - $ref: '#/parameters/pix'
+        - $ref: '#/parameters/sc'
+        - $ref: '#/parameters/media'
+        - $ref: '#/parameters/activity'
+        - $ref: '#/parameters/device'
+        - $ref: '#/parameters/cnr'
+        - $ref: '#/parameters/fn'
+        - $ref: '#/parameters/ln'
+        - $ref: '#/parameters/en'
+        - $ref: '#/parameters/ad'
+        - $ref: '#/parameters/pc'
+        - $ref: '#/parameters/email'
+        - $ref: '#/parameters/phone'
+        - $ref: '#/parameters/mobile'
+        - $ref: '#/parameters/gc'
+        - $ref: '#/parameters/gcval'
+        - $ref: '#/parameters/format'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ReturnParametersRedeem'
+        '500':
+          description: Internal server error
+  /type=STATUS:
+    post:
+      tags:
+        - Get Giftcode Status
+      summary: Get status of giftcard
+      description: |
+        This operation returns the status and value of a gift card when this is redeemed. For testing, the following example data have been used:
+
+        {
+        - "sid": "PB_NMS_DK"
+        - "la": "DK"
+        - "type": "STATUS"
+        - "gc": 8353656989
+        - "gc": "JSON"
+
+        }
+
+        With theese parameters inserted into the url: 'http://order.bm-data.com/?sid=BP_NMS_DK&la=DK&type=STATUS&gc=8353656989&format=JSON'
+
+        This request returned the response: '{ "canRedeemAs": [ { "ResponseCode": 34011921, "ProductCode": "ILL", "NoOfIssues": 5 } ], "giftCode": "8353656989", "productCode": "ILL", "isValid": false, "validUntil": "2018-02-02T00:00:00", "giftValue": 199.00, "status": "R" }'
+      operationId: getGiftcard  Status
+      parameters:
+        - $ref: '#/parameters/sid'
+        - $ref: '#/parameters/la'
+        - name: type
+          in: query
+          description: RequestType to indicate that this is a STATUS request
+          required: true
+          type: string
+          enum:
+            - STATUS
+        - $ref: '#/parameters/gc'
+        - $ref: '#/parameters/format'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ReturnGiftCodeStatusParameters'
+        '500':
+          description: Internal server error
+definitions:
+  RejectReasons:
+    description: 'blank if result = 0, Error message if result = -1'
+    type: string
+    enum:
+      - ''
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - '9'
+      - '10'
+      - '11'
+      - '12'
+      - '13'
+      - '20'
+      - '99'
+      - '100'
+  noOfIssues:
+    description: number of issue (for each possible magazine)
+    type: integer
+    example: 5
+  responseCode:
+    description: responsecode(s) for each possible magazine. Returned as multible items if productCode is "GKW"
+    type: integer
+    example: 34011921
+  productCode:
+    description: productCode(s) for each possible magazine. Returned as multiple items if productCode is "GKW"
+    type: string
+    example: ILL
+  ReturnParameters:
+    type: object
+    properties:
+      result:
+        description: 'should be 0 if request was succesful, -1 if failed'
+        type: integer
+        example: 0
+      ocr:
+        description: order reference number that can be used for online payment.
+        type: string
+        minLength: 20
+        example: '20211532200005163471'
+      data:
+        description: custom data.
+        type: string
+        example: ''
+      reason:
+        $ref: '#/definitions/RejectReasons'
+  ReturnParametersGiftCode:
+    type: object
+    properties:
+      result:
+        description: 'should be 0 if request was succesful, -1 if failed'
+        type: integer
+        example: 0
+      ocr:
+        description: order reference number that can be used for online payment.
+        type: string
+        minLength: 20
+        example: '20211532200005163471'
+      data:
+        description: custom data. Contains gift code when productCode= "GKW". This will also be sent on email.
+        type: string
+        example: '8353656989'
+      reason:
+        $ref: '#/definitions/RejectReasons'
+  ReturnParametersCONFIRM:
+    type: object
+    properties:
+      result:
+        description: 'should be 0 if request was succesful, -1 if failed'
+        type: integer
+        example: 0
+      ocr:
+        description: Verifies confirm
+        type: string
+        minLength: 20
+        example: 'VerifyEasy_response:_OK'
+      data:
+        description: custom data. Blank when TYPE = 'CONFIRM'
+        type: string
+        example: ''
+      reason:
+        $ref: '#/definitions/RejectReasons'
+  ReturnParametersRedeem:
+    type: object
+    properties:
+      result:
+        description: 'should be 0 if request was succesful, -1 if failed'
+        type: integer
+        example: 0
+      ocr:
+        description: order reference number. Blank when type=REDEEM
+        type: string
+        minLength: 20
+        example: ''
+      data:
+        description: custom data.
+        type: string
+        example: ''
+      reason:
+        $ref: '#/definitions/RejectReasons'
+  ReturnGiftCodeStatusParameters:
+    type: object
+    properties:
+      canRedeemAs:
+        description: 'array of possible productCodes, responseCodes and noOfIssues'
+        type: array
+        items:
+          - $ref: '#/definitions/responseCode'
+          - $ref: '#/definitions/productCode'
+          - $ref: '#/definitions/noOfIssues'
+      giftCode:
+        description: gift code (same as input)
+        type: string
+        example: '8625186989'
+      productCode:
+        description: locked to product (blank or GKW = any product)
+        type: string
+        example: ILL
+      isValid:
+        description: true/false
+        type: boolean
+        example: false
+      validUntil:
+        description: date when giftcard expires
+        type: string
+        format: date-time
+        example: '2016-12-09T00:00:00'
+      giftValue:
+        description: the value of the gift
+        type: number
+        format: money
+        example: 199
+      status:
+        description: status code
+        type: string
+        example: S
+parameters:
+  sid:
+    name: sid
+    in: query
+    description: ServiceID - e.g. 'BP_NMS_DK'
+    required: true
+    type: string
+  la:
+    name: la
+    in: query
+    description: Country
+    required: true
+    type: string
+    enum:
+      - DK
+      - SE
+      - 'NO'
+      - FI
+  pk:
+    name: pk
+    in: query
+    description: Productcode - e.g. 'ILL'
+    required: true
+    type: string
+  rc:
+    name: rc
+    in: query
+    description: Responsecode - e.g. 64800929
+    required: true
+    type: integer
+    minLength: 8
+    maxLength: 8
+  pr:
+    name: pr
+    in: query
+    description: Premiumcode - e.g. 912115
+    type: integer
+  return:
+    name: return
+    in: query
+    description: URL of provider-specific confirmation page (BP Only)
+    type: string
+  pix:
+    name: pix
+    in: query
+    description: Tracking pixel. Typically this will be an img tag with a http src and a size of one pixel
+    type: string
+  sc:
+    name: sc
+    in: query
+    description: 'Sourcecode. Indicates what kind of permissions Bonnier stores on email and phone number. Newsletter, TM etc. E.g. 298244'
+    required: true
+    type: integer
+    minLength: 6
+    maxLength: 6
+  payment:
+    name: payment
+    in: query
+    description: payment type
+    type: string
+    enum:
+      - WEB
+      - WEBPAY
+      - WEBBANK
+      - MOBILEPAY
+  media:
+    name: media
+    in: query
+    description: media channel from which this order was made
+    type: string
+  activity:
+    name: activity
+    in: query
+    description: used for statistic purposes
+    type: string
+  device:
+    name: device
+    in: query
+    description: 'ex ''MOBILE'', ''TABLET'', ''DESKTOP''. Could also be device-id'
+    type: string
+    enum:
+      - MOBILE
+      - TABLET
+      - DESKTOP
+  ocr:
+    name: ocr
+    in: query
+    description: Used to confirm online payment (refnr is required)
+    required: true
+    type: string
+  refnr:
+    name: refnr
+    in: query
+    description: payment reference nr (Dibs Refnr)
+    required: true
+    type: string
+  ccpart:
+    name: ccpart
+    in: query
+    description: Last 4 digits in creditcard. e.g. **** **** **** 9999
+    type: string
+  ccyy:
+    name: ccyy
+    in: query
+    description: Creditcard exp year
+    type: string
+    minLength: 2
+    maxLength: 2
+  ccmm:
+    name: ccmm
+    in: query
+    description: Creditcard exp month
+    type: string
+    minLength: 2
+    maxLength: 2
+  cctype:
+    name: cctype
+    in: query
+    description: 'Creditcard type (VISA, MC etc)'
+    type: string
+  shopid:
+    name: shopid
+    in: query
+    description: |-
+      Dibs shop ID.
+      - 90196080 for payments from Sweden, Norway and Findland, and from Denmark that are NOT Dankort, Visa/Dankort or MobilePay
+      - 90196082 for payments from Denmark that ARE Dankort or Visa/Dankort, 90218256 for payments from Denmark made with MobilePay.
+      - 90219610 is for TESTING ONLY
+    required: true
+    type: string
+    enum:
+      - 90196080
+      - 90196082
+      - 90218256
+      - 90219610
+    minLength: 8
+    maxLength: 8
+  recurring:
+    name: recurring
+    in: query
+    description: 1 = activate recurring if refnr is available
+    required: true
+    type: integer
+  cnr:
+    name: cnr
+    in: query
+    description: CustomerNr / SubscriptionNr
+    type: string
+  fn:
+    name: fn
+    in: query
+    description: Customer firstname
+    required: true
+    type: string
+  ln:
+    name: ln
+    in: query
+    description: Customer lastname
+    required: true
+    type: string
+  en:
+    name: en
+    in: query
+    description: Customer Extra name C/O
+    type: string
+  ad:
+    name: ad
+    in: query
+    description: Customer address + street nr.
+    required: true
+    type: string
+  pc:
+    name: pc
+    in: query
+    description: Customer postal code
+    required: true
+    type: string
+  email:
+    name: email
+    in: query
+    description: Customer email
+    required: true
+    type: string
+    format: email
+  phone:
+    name: phone
+    in: query
+    description: Customer phone
+    type: string
+  mobile:
+    name: mobile
+    in: query
+    description: Customer mobile
+    type: string
+  op:
+    name: op
+    in: query
+    description: 'when blank, this is a normal order, when 1 the order has a different billing address. When 1, receiver name fields below must exist'
+    type: string
+    enum:
+      - ''
+      - '1'
+  fn2:
+    name: fn2
+    in: query
+    description: Firstname of person who receives magazine when op=1
+    type: string
+  ln2:
+    name: ln2
+    in: query
+    description: Lastname of person who receives magazine when op=1
+    type: string
+  en2:
+    name: en2
+    in: query
+    description: Extraname C/O of person who receives magazine when op=1
+    type: string
+  ad2:
+    name: ad2
+    in: query
+    description: Address + streetnr of person who receives magazine when op=1
+    type: string
+  pc2:
+    name: pc2
+    in: query
+    description: Postal code of person who receives magazine when op=1
+    type: string
+  gcval:
+    name: gcval
+    in: query
+    description: Giftcode value in minor units (value*100). Ex. 1 SEK = 100
+    type: integer
+  gcpk:
+    name: gcpk
+    in: query
+    description: Giftcode product. Used if giftcode should be locked to a specific product
+    type: string
+  gclink:
+    name: gclink
+    in: query
+    description: Link (url) to printable Giftcode. This link is included in email to customer. Could be link to a PDF or similar
+    type: string
+  gc:
+    name: gc
+    in: query
+    description: Giftcode
+    type: string
+  format:
+    name: format
+    in: query
+    description: output format
+    type: string
+    enum:
+      - JSON

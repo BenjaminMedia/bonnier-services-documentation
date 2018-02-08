@@ -1,0 +1,851 @@
+{
+  "swagger": "2.0",
+  "schemes": [
+    "http"
+  ],
+  "host": "api2.bm-data.com",
+  "basePath": "/services/bm400/CMDBAPI.asmx/",
+  "info": {
+    "description": "# Introduction\n\nThis documentation describes how to get information about a campaign from Bonnier Magazine Data (BMD) based on a campaign id and a serviceID. The API returns a JSON representation of the selected campaign. \n\nIt is based on the assumption, that a campaign can present several offers for a given number of issues, together with one or more premiums, that can be chosen as part of the offer. The premiums will not necessarily be the same for every offer, and the possible payment types may vary per media.\n\nIt has been decided to omit some of the variables that is contained in the (old) webservice \"GetCampaignInfoXmlStringPure\", that is currently in use for bonniershop.dk. These omissions are made based on what we have decided that will be needed for presenting the campaign, and for placing orders based on a given campaign. They are also made based on assumptions about what will be needed in Advantage later, and what can be left out.\n\nFor the premiums, we present both the premium code and the article Id. The premium code is returned when a customer responds to a campaign, and chooses a premium. The article Id (from Astra) may be needed for later integrations.\n\n# Security\nIp protection\n\n# Testing\nThe test form is only available for requests from the local machine. For testing see url below\n",
+    "version": "1.0.0",
+    "title": "Campaign API - New Magazine shop",
+    "contact": {
+      "email": "kirsten.ostergaard@bmd.bonnier.dk"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "x-logo": {
+      "url": "http://www.bonnier.com/Global/Images/Bonnier_logotype.png"
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json",
+    "application/xml"
+  ],
+  "tags": [
+    {
+      "name": "Campaign",
+      "description": "Get Campaign Info."
+    }
+  ],
+  "paths": {
+    "/GetCampaignInfo/": {
+      "get": {
+        "tags": [
+          "Campaign"
+        ],
+        "summary": "Search for Campaign details using CampaignId",
+        "description": "\nThis operation returns a json-representation of the selected campaign. For testing the following parameters have been used:\n\n{\n  - \"serviceId\": \"BP_NMS_DK\"\n  - \"campaignId\": 324801\n  \n}\n\nWith these parameters inserted the url becomes: 'http://api2.bm-data.com/services/bm400/CMDBAPI.asmx/GetCampaignInfo?campaignId=324801&serviceID=BP_NMS_DK'\n",
+        "operationId": "GetCampaignInfo",
+        "parameters": [
+          {
+            "name": "CampaignId",
+            "in": "query",
+            "description": "Id of the campaign that needs to be fetched",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "serviceID",
+            "in": "query",
+            "description": "Username / ruleset for the campaign",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Campaign"
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "CampaignID": 324801,
+                  "Title": "3 el 6 nr + Craft Baselayer sæt  \n\n2017 koder",
+                  "ValidFrom": "2016-12-20T00:00:00",
+                  "ValidTo": "2017-12-20T00:00:00",
+                  "Locale": "sv-SE",
+                  "Language": "sv",
+                  "Currency": "SEK",
+                  "ShowTextInSwedish": "false",
+                  "Offers": [
+                    {
+                      "Id": 3042943,
+                      "Responsecode": 65234309,
+                      "Name": "3 nr 99,90kr + 39,50kr",
+                      "ProductCode": "ATR",
+                      "Issues": 3,
+                      "OfferText": "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                      "AcceptText": "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp. + 10,00 kr. i fakturaavgift.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                      "NextPeriodText": "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer.",
+                      "InvoiceFeeText": "(+ 10 kr)",
+                      "IntroPrice": "99,90",
+                      "IntroFee": "39,50",
+                      "InvoiceFee": "10,00",
+                      "ListPrice": "72,90",
+                      "TotalPrice": "139,40",
+                      "DibsRecurring": true,
+                      "ConditionType": "subscription",
+                      "Premiums": [
+                        {
+                          "ArticleName": "Craft Baselayer Sort M",
+                          "ArticleNr": "911442",
+                          "ArticleValue": "450,00",
+                          "AstraArticle": "9504769"
+                        },
+                        {
+                          "ArticleName": "Craft Baselayer Sort  L",
+                          "ArticleNr": "911443",
+                          "ArticleValue": "45.000,00",
+                          "AstraArticle": "9504770"
+                        },
+                        {
+                          "ArticleName": "Craft Baselayer Sort XL",
+                          "ArticleNr": "911444",
+                          "ArticleValue": "450,00",
+                          "AstraArticle": "9504771"
+                        }
+                      ]
+                    },
+                    {
+                      "Id": 3042944,
+                      "Responsecode": 65234348,
+                      "Name": "6 nr 179,90kr + 39,50kr",
+                      "ProductCode": "ATR",
+                      "Issues": 6,
+                      "OfferText": "<ul><li>6 nr av Aktiv Träning + Craft Baselayer Sort M för 179,90 kr + 39,50 kr. i porto och exp.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                      "AcceptText": "<ul><li>6 nr av Aktiv Träning + Craft Baselayer Sort M för 179,90 kr + 39,50 kr. i porto och exp. + 10,00 kr. i fakturaavgift.</li>\n<li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li>\n<li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li>\n<li>Aktiv Träning utkommer 12 gånger om året.</li></ul>",
+                      "NextPeriodText": "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer.",
+                      "InvoiceFeeText": "(+ 10 kr)",
+                      "IntroPrice": "179,90",
+                      "IntroFee": "39,50",
+                      "InvoiceFee": "10,00",
+                      "ListPrice": "72,90",
+                      "TotalPrice": "219,40",
+                      "DibsRecurring": true,
+                      "ConditionType": "subscription",
+                      "Premiums": [
+                        {
+                          "ArticleName": "Craft Baselayer Sort M",
+                          "ArticleNr": "911442",
+                          "ArticleValue": "450,00",
+                          "AstraArticle": "9504769"
+                        },
+                        {
+                          "ArticleName": "Craft Baselayer Sort  L",
+                          "ArticleNr": "911443",
+                          "ArticleValue": "45.000,00",
+                          "AstraArticle": "9504770"
+                        },
+                        {
+                          "ArticleName": "Craft Baselayer Sort XL",
+                          "ArticleNr": "911444",
+                          "ArticleValue": "450,00",
+                          "AstraArticle": "9504771"
+                        }
+                      ]
+                    }
+                  ],
+                  "Medias": [
+                    {
+                      "Name": "AboHeader",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Abonner",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "atr",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Bannere",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Bannere_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Display_test1",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Display_test2",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Display_test3",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "KM",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Layer",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Layer_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "MyTip",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "NBBannere",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "NBBannere_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "NBLink",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "NBLink_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedArt",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedArt_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Redbox",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Redbox_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedFacebook",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedInstagram",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedLink",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedLink_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedTest1",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedTest2",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "RedTest3",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Shop",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Sleeknote",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Sleeknote_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Sticky_mobile",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    },
+                    {
+                      "Name": "Sticky_mobile_cross",
+                      "PaymentTypes": [
+                        {
+                          "Name": "Web"
+                        },
+                        {
+                          "Name": "WebPay"
+                        },
+                        {
+                          "Name": "WebBank"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "500": {
+            "description": "Exception, internal error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Campaign": {
+      "type": "object",
+      "properties": {
+        "CampaignID": {
+          "description": "Key value for campaign",
+          "type": "integer",
+          "minLength": 6,
+          "example": 324801
+        },
+        "Title": {
+          "description": "Campaign title",
+          "type": "string",
+          "example": "3 el 6 nr + Craft Baselayer sæt  \\n\\n2017 koder"
+        },
+        "ValidFrom": {
+          "description": "Campaign valid from",
+          "type": "string",
+          "format": "date",
+          "example": "2016-12-20T00:00:00"
+        },
+        "ValidTo": {
+          "description": "Campaign valid from",
+          "type": "string",
+          "format": "date",
+          "example": "2016-12-20T00:00:00"
+        },
+        "Locale": {
+          "description": "Customer market",
+          "type": "string",
+          "enum": [
+            "da-DK",
+            "sv-SE",
+            "nb-NO",
+            "fi-FI"
+          ]
+        },
+        "Language": {
+          "description": "Campaign language",
+          "type": "string",
+          "enum": [
+            "da",
+            "sv",
+            "no",
+            "fi"
+          ]
+        },
+        "Currency": {
+          "description": "Currency of campaign",
+          "type": "string",
+          "enum": [
+            "DKK",
+            "SEK",
+            "NOK",
+            "EUR"
+          ]
+        },
+        "ShowInSweedish": {
+          "description": "True, when Locale is \"fi-FI\" and language is \"sv\"",
+          "type": "boolean",
+          "example": false
+        },
+        "Offers": {
+          "description": "Campaign offers",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Offers"
+          }
+        },
+        "Medias": {
+          "description": "Which media displays the campaign",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Medias"
+          }
+        }
+      }
+    },
+    "Offers": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "ResponseCode": {
+            "description": "A k a CouponCode. A value that uniquely defines the offer",
+            "type": "integer",
+            "example": 65234309
+          },
+          "Name": {
+            "description": "A brief description of the offer. For internal use.",
+            "type": "string",
+            "example": "3 nr 99,90kr + 39,50kr"
+          },
+          "ProductCode": {
+            "description": "A 3 letter abreviation for the products (magazines)",
+            "type": "string",
+            "example": "ATR"
+          },
+          "Issues": {
+            "description": "Number of issues in offer",
+            "type": "integer",
+            "example": 3
+          },
+          "OfferText": {
+            "description": "Text to present the offer, price, premium and conditions",
+            "type": "string",
+            "example": "<ul><li>3 nr av Aktiv Träning + Craft Baselayer Sort M för 99,90 kr + 39,50 kr. i porto och exp.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nummer)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li></ul>"
+          },
+          "AcceptText": {
+            "description": "Text to repeat the offer and conditions. Is shown to the customer right before checkout",
+            "type": "string",
+            "example": "<ul> <li>3 nr av Aktiv Träning + premie för 99,90 kr + 39,50 kr. i porto och exp. Totalt 139,40 kr.</li> <li>Efter erbjudandet fortsätter prenumerationen som tillsvidareprenumeration och kan avslutas när som helst.</li> <li>Prenumerationen betalas för 3 nummer åt gången, totalt 218,70 kr. (72,90 per nr)</li> <li>Aktiv Träning utkommer 12 gånger om året.</li/> </ul>"
+          },
+          "NextPeriodText": {
+            "description": "Description of the subscription terms",
+            "type": "string",
+            "example": "Prenumerationen fortsätter i löpande kvartalsprenumeration för 72,90 per nummer."
+          },
+          "InvoiceFeeText": {
+            "description": "The price as a text for the shop",
+            "type": "string",
+            "example": "(+ 10 kr)"
+          },
+          "IntroPrice": {
+            "description": "The offer price for the issues of the magazine without a premium",
+            "type": "string",
+            "example": "99,90"
+          },
+          "IntroFee": {
+            "description": "Administration fee / postage fee",
+            "type": "string",
+            "example": "39,50"
+          },
+          "InvoiceFee": {
+            "description": "The price for sending a printed invoice",
+            "type": "string",
+            "example": "10,00"
+          },
+          "ListPrice": {
+            "description": "The price for one issue",
+            "type": "string",
+            "example": "72.90"
+          },
+          "TotalPrice": {
+            "description": "Total price to be payed",
+            "type": "string",
+            "example": "139,40"
+          },
+          "DibsRecurring": {
+            "description": "True if ConditionType = Subscription",
+            "type": "boolean",
+            "example": true
+          },
+          "ConditionType": {
+            "description": "Subscription or otherwise",
+            "type": "string",
+            "example": "Subscription"
+          },
+          "Premiums": {
+            "description": "The premiums that can be chosen with this offer.",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Premiums"
+            }
+          }
+        }
+      }
+    },
+    "Medias": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "Name": {
+            "description": "Place of campaign occurrence in media",
+            "type": "string",
+            "example": "AboHeader"
+          },
+          "PaymentTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/PaymentTypes"
+            }
+          }
+        }
+      }
+    },
+    "PaymentTypes": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "Name": {
+            "description": "Payment method",
+            "type": "string",
+            "enum": [
+              "Web",
+              "WebPay",
+              "MobilePay",
+              "WebBank"
+            ]
+          }
+        }
+      }
+    },
+    "Premiums": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "ArticleName": {
+            "description": "Name of premium",
+            "type": "string",
+            "example": "Craft Baselayer Sort M"
+          },
+          "ArticleNumber": {
+            "description": "Article number / premium code. This will be returned when an order with this premium is made",
+            "type": "string",
+            "example": "911442"
+          },
+          "ArticleValue": {
+            "description": "Value of this article",
+            "type": "number",
+            "format": "float",
+            "example": 450
+          },
+          "AstraArticle": {
+            "description": "Astra article Id",
+            "type": "string",
+            "example": "95047069"
+          }
+        }
+      }
+    }
+  }
+}
